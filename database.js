@@ -18,11 +18,16 @@ db.serialize(() => {
 });
 
 function createUser(username, password) {
-  const insertQuery = db.prepare("INSERT INTO User VALUES (?, ?)");
+  const insertQuery = db.prepare("INSERT INTO User (username, password) VALUES (?, ?)");
   insertQuery.run([username, password], (err) => {if (err) {console.error("error inserting");}});
   insertQuery.finalize();
 }
 
 function closeDB() {
   db.close();
+}
+
+module.exports = {
+  createUser,
+  closeDB
 }
