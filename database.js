@@ -2,7 +2,6 @@ var fs = require("fs");
 var file = "test.db";
 var exists = fs.existsSync(file);
 var crypto = require("crypto");
-var jwt = require("jsonwebtoken");
 
 var sqlite3 = require("sqlite3").verbose();
 var db = new sqlite3.Database("./test.db")
@@ -82,6 +81,8 @@ function authorizeUser(username, password) {
 function closeDB() {
   db.close();
 }
+
+
 
 module.exports = {
   createUser,

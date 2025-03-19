@@ -101,10 +101,8 @@ app.get("/api/test",
       const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
       res.status(200).send(decoded.username)
     } catch (error) {
-      res.status(400).send(error);
+      res.status(401).send("Unauthorized.");
     }
-
-    
   }
 )
 
