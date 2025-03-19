@@ -1,6 +1,8 @@
 var fs = require("fs");
 var file = "test.db";
 var exists = fs.existsSync(file);
+var crypto = require("crypto");
+var jwt = require("jsonwebtoken");
 
 var sqlite3 = require("sqlite3").verbose();
 var db = new sqlite3.Database("./test.db")
@@ -24,11 +26,22 @@ db.serialize(() => {
         );
     `, (err) => {if (err) {console.error('Error creating table Message.')}});
 
+
+  db.run(`
+          CREATE TABLE IF NOT EXISTS Friend (
+          username1 TEXT NOT NULL,
+          username2 TEXT NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          PRIMARY KEY (username1, username2)
+        );
+    `, (err) => {if (err) {console.og(error);}});
 });
 
 function createUser(username, password) {
+  // SHA512 to prevent easy bruteforcing
+  var password = crypto.createHash('sha512').update(password).digest('hex');
   const insertQuery = db.prepare("INSERT INTO User (username, password) VALUES (?, ?)");
-  insertQuery.run([username, password], (err) => {if (err) {console.error("error inserting");}});
+  insertQuery.run([username, password], (err) => {if (err) {console.error("error inserting new user:" + err);}});
   insertQuery.finalize();
 }
 
@@ -50,6 +63,22 @@ function getMessage() {
     });
   });
 }
+
+function authorizeUser(username, password) {
+  // promises will handle the async stuff
+  var password = crypto.createHash('sha512').update(password).digest('hex');
+  console.log("username:" + username + "Password:" + password)
+  return new Promise((resolve, reject) => {
+    db.all("SELECT * FROM User WHERE username = ? AND password = ?", [username, password], (err, rows) => {
+      if (err) {
+        reject("Error getting user.");
+      } else {
+        resolve(rows);
+      }
+    })
+  });
+}
+
 function closeDB() {
   db.close();
 }
@@ -58,5 +87,6 @@ module.exports = {
   createUser,
   createMessage,
   getMessage,
+  authorizeUser,
   closeDB
 }
