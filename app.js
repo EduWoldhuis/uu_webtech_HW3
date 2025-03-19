@@ -33,4 +33,33 @@ app.post("/api/register",
   }
 );
 
+app.post("/api/message",
+  function (req, res) {
+    let username = req.body.username;
+    let message = req.body.message;
+    res.send("received:" + username + message);
+
+    db.createMessage(username, message, (err) => {
+      if (err) {
+        console.error("Error inserting:", err.message);
+        res.status(500).send("Failed to create message: " + err.message);
+      } else {
+        res.send("Message created successfully: " + message);
+      }
+    });
+  }
+);
+
+app.get("/api/message",
+  function (req, res) {
+  // We have to use promises because sqlite3 is built asyncronously.
+  db.getMessage().then((messages) => {
+      res.send(messages)
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
+);
+
 app.listen(8080, "127.0.0.1");
