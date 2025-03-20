@@ -37,6 +37,7 @@ db.serialize(() => {
 });
 
 function createUser(username, password) {
+  // Rein todo: username validation
   // SHA512 to prevent easy bruteforcing
   var password = crypto.createHash('sha512').update(password).digest('hex');
   const insertQuery = db.prepare("INSERT INTO User (username, password) VALUES (?, ?)");
@@ -45,6 +46,7 @@ function createUser(username, password) {
 }
 
 function createMessage(username, message) {
+  // Todo: XSS validation
   const insertQuery = db.prepare("INSERT INTO Message (username, message) VALUES (?, ?)");
   insertQuery.run([username, message], (err) => {if (err) {console.error("error inserting");}});
   insertQuery.finalize();
