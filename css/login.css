@@ -1,0 +1,37 @@
+body {
+    margin: 0;
+    background-color: rgb(230, 230, 250);
+    display: flex;
+    justify-content: center;
+}
+
+section{
+    font-size: 80px;
+    text-align: center;
+    height: 80vh;
+    margin: 20vh 0 0 0
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    height: 50vh;
+    width: 20vw;
+    background-color: white;
+}
+
+input{
+    height: 5vh;
+    width: auto;
+    font-size: 50px;
+    margin: 40px 40px 0;
+    border: 1px solid blue;
+}
+
+.submit-button{
+    height: 100px;
+    font-size: 50px;
+    margin: 40px 40px 0;
+    background-color: blue;
+}
+

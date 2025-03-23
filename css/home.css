@@ -1,0 +1,45 @@
+body{
+    margin: 0;
+}
+
+header{
+    display: flex;
+    flex-direction: row;
+    font-size: 8vh;
+    height: 10vh;
+    background-color: rgb(128, 128, 128);
+}
+
+#main-navigation {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 50vw;
+}
+
+.logo{
+    border-radius: 50%;
+    object-fit: cover;
+    height: 8vh;
+    width: auto;
+    margin: 1vh 2vw;
+}
+
+.icon {
+    border-radius: 50%;
+    object-fit: cover;
+    height: 6vh;
+    width: auto;
+    margin: 2vh;
+}
+
+@media(max-width: 600px){
+    header{
+        color: red;
+        font-size: 0px;
+    }
+
+    #main-navigation {
+        flex: 1;
+    }
+}
