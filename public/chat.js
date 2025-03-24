@@ -1,7 +1,7 @@
 async function fetchMessages() {
     console.log("called");
     try {
-    messages = await fetch("/api/message").then(x => x.json()).then(data => {return data})
+    messages = await fetch("/api/message", {method: 'GET', credentials: 'include'}).then(x => x.json()).then(data => {return data})
     const container = document.getElementById("message-container");
     container.innerHTML = ""; 
 
@@ -16,3 +16,11 @@ async function fetchMessages() {
     document.getElementById("message-container").textContent = "Failed to load messages.";
   }
 }
+
+function messageLoop() {
+  // Immediately display the messages before starting the loop
+  fetchMessages();
+  setInterval(fetchMessages, 5000);
+}
+// When the elements are loaded, start a loop fetching the messages.
+window.addEventListener('DOMContentLoaded', messageLoop);

@@ -45,11 +45,11 @@ function createUser(username, password) {
   insertQuery.finalize();
 }
 
-function createMessage(username, message) {
+function createMessage(username, message, callback) {
   // Todo: XSS validation
   const insertQuery = db.prepare("INSERT INTO Message (username, message) VALUES (?, ?)");
-  insertQuery.run([username, message], (err) => {if (err) {console.error("error inserting");}});
-  insertQuery.finalize();
+  insertQuery.run([username, message], (err) => {if (err) {return callback(err)}});
+  callback(null);
 }
 
 function getMessage() {
