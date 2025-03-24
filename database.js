@@ -4,7 +4,7 @@ var exists = fs.existsSync(file);
 var crypto = require("crypto");
 
 var sqlite3 = require("sqlite3").verbose();
-var db = new sqlite3.Database("./test.db")
+var db = new sqlite3.Database(__dirname + "/test.db")
 
 db.serialize(() => {
   db.run(`
@@ -38,7 +38,7 @@ db.serialize(() => {
 
 function createUser(username, password) {
   // Rein todo: username validation
-  // SHA512 to prevent easy bruteforcing
+    // SHA512 to prevent easy bruteforcing
   var password = crypto.createHash('sha512').update(password).digest('hex');
   const insertQuery = db.prepare("INSERT INTO User (username, password) VALUES (?, ?)");
   insertQuery.run([username, password], (err) => {if (err) {console.error("error inserting new user:" + err);}});
@@ -59,7 +59,7 @@ function getMessage() {
       if (err) {
         reject("Error getting messages.");
       } else {
-        resolve(rows);
+          resolve(rows);
       }
     });
   });
