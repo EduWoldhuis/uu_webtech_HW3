@@ -20,14 +20,29 @@ app.use(
 );
 
 app.get("/",function (req, res) {
-  res.sendFile(__dirname + "/test.html");
+  res.sendFile(__dirname + "/register.html");
 });
+
+app.get("/home", function (req, res) {
+    res.sendFile(__dirname + "/home.html");
+})
+
+app.get("/login", function (req, res) {
+    res.sendFile(__dirname + "/login.html");
+})
+
+app.post("/api/login",    
+    function (req, res) {
+        let promise = db.authorizeUser(req.body.username, req.body.password);
+        promise.then(res.redirect("/home")).catch(console.log("Error at login"));
+    }
+)
 
 app.post("/api/register",
   function (req, res) {
     let username = req.body.username;
     let password = req.body.password;
-    res.send("received:" + username + password);
+    //res.send("received:" + username + password);
 
     db.createUser(username, password, (err) => {
       if (err) {
@@ -37,6 +52,7 @@ app.post("/api/register",
         res.send("User created successfully: " + username);
       }
     });
+    res.redirect("/login");
   }
 );
 
@@ -56,13 +72,12 @@ app.post("/api/message",
     });
   }
 );
-
 
 app.get("/",function (req, res) {
-  res.sendFile(__dirname + "/test.html");
+  res.sendFile(__dirname + "/register.html");
 });
 
-app.post("/api/register",
+/*app.post("/api/register",
   function (req, res) {
     let username = req.body.username;
     let password = req.body.password;
@@ -77,8 +92,9 @@ app.post("/api/register",
       }
     });
   }
-);
+);*/
 
+/*
 app.post("/api/message",
   function (req, res) {
     let username = req.body.username;
@@ -94,14 +110,14 @@ app.post("/api/message",
       }
     });
   }
-);
+);*/
 
 app.get("/api/message",
   function (req, res) {
   // We have to use promises because sqlite3 is built asyncronously.
     try {
       // Check for authorization
-      const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+      //const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
       db.getMessage().then((messages) => {
         res.send(messages)
         }).catch((error) => {

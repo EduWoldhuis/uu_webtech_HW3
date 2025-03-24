@@ -6,10 +6,10 @@ body {
 }
 
 section{
-    font-size: 80px;
+    font-size: 40px;
     text-align: center;
     height: 80vh;
-    margin: 20vh 0 0 0
+    margin: 10vh 0 0 0
 }
 
 form{
@@ -23,15 +23,21 @@ form{
 input{
     height: 5vh;
     width: auto;
-    font-size: 50px;
+    font-size: 20px;
     margin: 40px 40px 0;
     border: 1px solid blue;
 }
 
-.submit-button{
-    height: 100px;
-    font-size: 50px;
+.login-button{
+    height: 50px;
+    font-size: 20px;
     margin: 40px 40px 0;
     background-color: blue;
+    color: white;
 }
 
+a {
+    font-size: 20px;
+    color: black;
+    margin: 20px 0 0 0;
+}

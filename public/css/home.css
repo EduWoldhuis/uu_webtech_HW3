@@ -33,6 +33,23 @@ header{
     margin: 2vh;
 }
 
+#message-container{
+    background-color: gray;
+    margin: 20px;
+    min-height: 50vh;
+    text-align: center;
+}
+
+.user-message {
+    float: right;
+    color: green;
+}
+
+.other-message {
+    float: left;
+    color: red;
+}
+
 @media(max-width: 600px){
     header{
         color: red;
