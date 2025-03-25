@@ -16,3 +16,12 @@ async function fetchMessages() {
     document.getElementById("message-container").textContent = "Failed to load messages.";
   }
 }
+
+function toggleChat() {
+   const container = document.getElementById("message-container");
+    if (container.style.display == "none") {
+        container.style.display = "block";
+    } else {
+        container.style.display = "none";
+    }
+}
