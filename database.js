@@ -89,7 +89,6 @@ function createUser(username, password, first_name, last_name, age, email, major
 
 function createMessage(user_id, message, callback) {
   // Todo: XSS validation
-  console.log(`USERID: ${user_id}`)
   const insertQuery = db.prepare("INSERT INTO Message (user_id, message) VALUES (?, ?)");
   insertQuery.run([user_id, message], (err) => {if (err) {return callback(err)}});
   callback(null);
@@ -106,6 +105,43 @@ function getMessage() {
       }
     });
   });
+}
+
+function getUserdata(user_id) {
+  // promises will handle the async stuff
+  return new Promise((resolve, reject) => {
+    db.get("SELECT * from User WHERE id = ?", [user_id], (err, row) => {
+      if (err) {
+        reject("Error getting userdata.");
+      } else {
+        resolve(row);
+      }
+    });
+  });
+}
+
+function updateUserdata(user_id, username, password, first_name, last_name, age, email, major, callback) {
+  if (!username.match("^[A-Za-z][A-Za-z0-9_]{2,9}$")) { //regex from https://laasyasettyblog.hashnode.dev/validating-username-using-regex
+    console.error("Invalid username! It should start with a letter and be 3-10 characters long.");
+    return;
+  }
+  // SHA512 to prevent easy bruteforcing
+  var password = crypto.createHash('sha512').update(password).digest('hex');
+  const updateQuery = db.prepare(`UPDATE User 
+                                  SET username = ?, password = ?, first_name = ?, last_name = ?, age = ?, email = ?, major = ?
+                                  WHERE id = ?`);
+  updateQuery.run([username, password, first_name, last_name, age, email, major, user_id], (err) => 
+    {
+      if (err) {
+        console.error("error updating user:" + err);
+        callback(err);
+      }
+      else {
+        callback(null)
+      }
+    });
+
+  updateQuery.finalize();
 }
 
 function authorizeUser(username, password) {
@@ -134,5 +170,7 @@ module.exports = {
   createMessage,
   getMessage,
   authorizeUser,
+  getUserdata,
+  updateUserdata,
   closeDB
 }

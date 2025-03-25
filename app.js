@@ -127,13 +127,68 @@ app.post("/api/login",
   }
 );
 
+app.get("/api/userdata",
+  function (req, res) {
+  // We have to use promises because sqlite3 is built asyncronously.
+    try {
+      // Check for authorization
+      const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+      db.getUserdata(decoded.id).then((userdata) => {
+        res.send(userdata)
+      }).catch((error) => {
+        console.error(error);
+      });
+    } catch (error) {
+      res.status(401).send(error);
+    }
+  }
+);
+
+app.get("/profile",
+  function (req, res) {
+    try {
+      const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+      res.sendFile(__dirname + "/profile.html");
+    } catch (error) {
+      res.status(401).send("Unauthorized");
+    }
+  }
+);
+
+app.post("/profile",
+  function (req, res) {
+    let username = req.body.username;
+    let password = req.body.password;
+    let first_name = req.body.first_name;
+    let last_name = req.body.last_name;
+    let age = req.body.age;
+    let email = req.body.email;
+    let major = req.body.major;
+    // We have to use promises because sqlite3 is built asyncronously.
+    try {
+      // Check for authorization
+      const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+      db.updateUserdata(decoded.id, username, password, first_name, last_name, age, email, major, (err) => {
+        if (err) {
+          console.error("Error inserting:", err.message);
+          res.status(500).send("Failed to update: " + err.message);
+        } else {
+          res.status(200).send("Updated successfully.");
+        }
+      });
+    } catch (error) {
+      res.status(401).send(error);
+    }
+  }
+);
+
 app.get("/api/test",
   function (req, res) {
     try {
       const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
-      res.status(200).send(decoded.id)
+      res.status(200).send({string: decoded.id})
     } catch (error) {
-      res.status(401).send("Unauthorized.");
+      res.status(401).send(error);
     }
   }
 )
