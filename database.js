@@ -37,8 +37,11 @@ db.serialize(() => {
 });
 
 function createUser(username, password) {
-  // Rein todo: username validation
-    // SHA512 to prevent easy bruteforcing
+  if (!username.match("^[A-Za-z][A-Za-z0-9_]{2,9}$")) { //regex from https://laasyasettyblog.hashnode.dev/validating-username-using-regex
+    console.error("Invalid username! It should start with a letter and be 3-10 characters long.");
+    return;
+  }
+  // SHA512 to prevent easy bruteforcing
   var password = crypto.createHash('sha512').update(password).digest('hex');
   const insertQuery = db.prepare("INSERT INTO User (username, password) VALUES (?, ?)");
   insertQuery.run([username, password], (err) => {if (err) {console.error("error inserting new user:" + err);}});
