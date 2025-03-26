@@ -1,7 +1,7 @@
 async function fetchMessages() {
     console.log("called");
     try {
-    messages = await fetch("/api/message").then(x => x.json()).then(data => {return data})
+    messages = await fetch("/api/message", {method: 'GET', credentials: 'include'}).then(x => x.json()).then(data => {return data})
     const container = document.getElementById("message-container");
     container.innerHTML = ""; 
 
@@ -17,6 +17,7 @@ async function fetchMessages() {
   }
 }
 
+<<<<<<< HEAD
 function toggleChat() {
    const container = document.getElementById("message-container");
     if (container.style.display == "none") {
@@ -25,3 +26,12 @@ function toggleChat() {
         container.style.display = "none";
     }
 }
+=======
+function messageLoop() {
+  // Immediately display the messages before starting the loop
+  fetchMessages();
+  setInterval(fetchMessages, 5000);
+}
+// When the elements are loaded, start a loop fetching the messages.
+window.addEventListener('DOMContentLoaded', messageLoop);
+>>>>>>> 0e184549113dcd6325fa54c10ad0c8409a5a4340

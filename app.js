@@ -10,7 +10,6 @@ var cookieParser = require("cookie-parser");
 
 var db = require("./database");
 
-
 const app = express();
 
 app.use(
@@ -18,6 +17,7 @@ app.use(
   express.static(__dirname + '/public'),
   cookieParser()
 );
+
 
 app.get("/",function (req, res) {
   res.sendFile(__dirname + "/register.html");
@@ -31,12 +31,6 @@ app.get("/login", function (req, res) {
     res.sendFile(__dirname + "/login.html");
 })
 
-app.post("/api/login",    
-    function (req, res) {
-        let promise = db.authorizeUser(req.body.username, req.body.password);
-        promise.then(res.redirect("/home")).catch(console.log("Error at login"));
-    }
-)
 
 app.post("/api/register",
   function (req, res) {
@@ -58,18 +52,23 @@ app.post("/api/register",
 
 app.post("/api/message",
   function (req, res) {
-    let username = req.body.username;
     let message = req.body.message;
-    res.send("received:" + username + message);
+    try {
+      const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+      let username = decoded.username;
 
-    db.createMessage(username, message, (err) => {
-      if (err) {
-        console.error("Error inserting:", err.message);
-        res.status(500).send("Failed to create message: " + err.message);
-      } else {
-        res.send("Message created successfully: " + message);
-      }
-    });
+      db.createMessage(username, message, (err) => {
+        if (err) {
+          console.error("Error inserting:", err.message);
+          res.status(500).send("Failed to create message: " + err.message);
+        } else {
+          res.status(200).send("Message created successfully: " + message);
+        }
+      });
+    } catch (error) {
+      res.status(401).send("Unauthorized.");      
+    }
+
   }
 );
 
@@ -77,47 +76,13 @@ app.get("/",function (req, res) {
   res.sendFile(__dirname + "/register.html");
 });
 
-/*app.post("/api/register",
-  function (req, res) {
-    let username = req.body.username;
-    let password = req.body.password;
-    res.send("received:" + username + password);
-
-    db.createUser(username, password, (err) => {
-      if (err) {
-        console.error("Error inserting:", err.message);
-        res.status(500).send("Failed to create user: " + err.message);
-      } else {
-        res.send("User created successfully: " + username);
-      }
-    });
-  }
-);*/
-
-/*
-app.post("/api/message",
-  function (req, res) {
-    let username = req.body.username;
-    let message = req.body.message;
-    res.send("received:" + username + message);
-
-    db.createMessage(username, message, (err) => {
-      if (err) {
-        console.error("Error inserting:", err.message);
-        res.status(500).send("Failed to create message: " + err.message);
-      } else {
-        res.send("Message created successfully: " + message);
-      }
-    });
-  }
-);*/
 
 app.get("/api/message",
   function (req, res) {
   // We have to use promises because sqlite3 is built asyncronously.
     try {
       // Check for authorization
-      //const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+      const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
       db.getMessage().then((messages) => {
         res.send(messages)
         }).catch((error) => {
@@ -129,7 +94,7 @@ app.get("/api/message",
   }
 );
 
-app.post("/api/authorize",
+app.post("/api/login",
   function (req, res) {
     let username = req.body.username;
     let password = req.body.password;
@@ -149,10 +114,18 @@ app.post("/api/authorize",
     }
     console.log("username:" + user[0].username);
     const token = jwt.sign({username: user[0].username}, 'secretKeyWebtech', {expiresIn: '1h',});
+<<<<<<< HEAD
     res.cookie('authorization', token);
     //res.status(200).json({ token });
     res.redirect("/home");
     }).catch((error) => {console.error("Auth error:" + error); res.status(500).send(error)});
+=======
+    res.cookie('authorization', token)
+    res.redirect('/home')
+    //res.status(200).json({token})
+    
+    }).catch((error) => {console.error("Auth error:" + error); res.status(500).send(error)} );
+>>>>>>> 0e184549113dcd6325fa54c10ad0c8409a5a4340
   }
 );
 
