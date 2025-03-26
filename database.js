@@ -1,3 +1,4 @@
+//asdasjhadsdas
 var fs = require("fs");
 var file = "test.db";
 var exists = fs.existsSync(file);
@@ -76,15 +77,45 @@ db.serialize(() => {
 });
 
 function createUser(username, password, first_name, last_name, age, email, major) {
-  if (!username.match("^[A-Za-z][A-Za-z0-9_]{2,9}$")) { //regex from https://laasyasettyblog.hashnode.dev/validating-username-using-regex
-    console.error("Invalid username! It should start with a letter and be 3-10 characters long.");
-    return;
+  if(validateInput(username, first_name, last_name, age, email, major)) {
+    // SHA512 to prevent easy bruteforcing
+    var password = crypto.createHash('sha512').update(password).digest('hex');
+    const insertQuery = db.prepare("INSERT INTO User (username, password, first_name, last_name, age, email, major) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    insertQuery.run([username, password, first_name, last_name, age, email, major], (err) => {if (err) {console.error("error inserting new user:" + err);}});
+    insertQuery.finalize();
   }
-  // SHA512 to prevent easy bruteforcing
-  var password = crypto.createHash('sha512').update(password).digest('hex');
-  const insertQuery = db.prepare("INSERT INTO User (username, password, first_name, last_name, age, email, major) VALUES (?, ?, ?, ?, ?, ?, ?)");
-  insertQuery.run([username, password, first_name, last_name, age, email, major], (err) => {if (err) {console.error("error inserting new user:" + err);}});
-  insertQuery.finalize();
+  else {
+    console.error("Formatting error");
+  }
+}
+
+function validateInput(username, first_name, last_name, age, email, major) {
+  if (!/^[A-Za-z][A-Za-z0-9_]{2,9}$/.test(username)) {
+    console.error("Invalid username! It should start with a letter and be 3-10 characters long.");
+    return false;
+  }
+  if (!/^[A-Za-z]+$/.test(first_name)) {
+    console.error("Invalid first name! It should only include letters.");
+    return false;
+  }
+  if (!/^[A-Za-z]+$/.test(last_name)) {
+    console.error("Invalid first name! It should only include letters.");
+    return false;
+  }
+  if (age < 0 || age > 100) {
+    console.error("Invalid age! It should be 0-100");
+    return false;
+  };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.toLowerCase())) {   //regex from https://stackoverflow.com/questions/46155/
+    console.error("Invalid email!");
+    return false;
+  };
+  if (!/^[A-Za-z\s]+$/.test(major)) {
+    console.error("Invalid major!");
+    return false;
+  }
+
+  return true;
 }
 
 function createMessage(user_id, message, callback) {
