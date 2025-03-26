@@ -114,18 +114,10 @@ app.post("/api/login",
     }
     console.log("username:" + user[0].username);
     const token = jwt.sign({username: user[0].username}, 'secretKeyWebtech', {expiresIn: '1h',});
-<<<<<<< HEAD
     res.cookie('authorization', token);
     //res.status(200).json({ token });
     res.redirect("/home");
     }).catch((error) => {console.error("Auth error:" + error); res.status(500).send(error)});
-=======
-    res.cookie('authorization', token)
-    res.redirect('/home')
-    //res.status(200).json({token})
-    
-    }).catch((error) => {console.error("Auth error:" + error); res.status(500).send(error)} );
->>>>>>> 0e184549113dcd6325fa54c10ad0c8409a5a4340
   }
 );
 
