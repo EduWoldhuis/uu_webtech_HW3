@@ -121,8 +121,7 @@ app.post("/api/login",
     const token = jwt.sign({id: user[0].id}, 'secretKeyWebtech', {expiresIn: '1h',});
     res.cookie('authorization', token)
     res.redirect('/home')
-    //res.status(200).json({token})
-    
+    //res.status(200).json({token})  
     }).catch((error) => {console.error("Auth error:" + error); res.status(500).send(error)} );
   }
 );
