@@ -20,7 +20,24 @@ db.serialize(() => {
           major TEXT NOT NULL,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
-    `, (err) => {if (err) {console.error('Error creating table User.')}});
+    `, (err) => {if (err) {console.error('Error creating table User.')}}); 
+
+    db.run(`
+        CREATE TABLE IF NOT EXISTS Hobby (
+        user_id INTEGER NOT NULL,
+        hobby TEXT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES User(id)
+        );
+    `, (err) => { if (err) { console.error('Error creating table Hobby.' + err) } }); 
+    
+    db.run(`
+        CREATE TABLE IF NOT EXISTS Course (
+        user_id INTEGER NOT NULL,
+        course TEXT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES User(id)
+        );
+    `, (err) => { if (err) { console.error('Error creating table Course.' + err) } }); 
+
 
   db.run(`
           CREATE TABLE IF NOT EXISTS Message (

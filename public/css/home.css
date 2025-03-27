@@ -37,17 +37,21 @@ header{
     background-color: gray;
     margin: 20px;
     min-height: 50vh;
+    max-height: 50vh;
     text-align: center;
+    overflow-y: auto;
 }
 
 .user-message {
-    float: right;
+    text-align: right;
     color: green;
+    display: block;
 }
 
 .other-message {
-    float: left;
-    color: red;
+    text-align: left;
+    color: yellow;
+    display: block;
 }
 
 @media(max-width: 600px){
