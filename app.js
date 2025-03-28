@@ -18,7 +18,6 @@ app.use(
   cookieParser()
 );
 
-
 app.get("/",function (req, res) {
   res.sendFile(__dirname + "/register.html");
 });
@@ -112,15 +111,15 @@ app.post("/api/login",
     }).then((user) => {
     console.log("Users found:");
     console.log(user);
-    if (!user) {
-      res.status(401).send("Authentication failed. no user with that name.");
+    if (user.length == 0) {
+      res.redirect('/login');
       return;
     }
     console.log("uid:" + user[0].id);
     const token = jwt.sign({id: user[0].id}, 'secretKeyWebtech', {expiresIn: '1h',});
-    res.cookie('authorization', token)
-    res.redirect('/home')
-    //res.status(200).json({token})  
+    res.cookie('authorization', token);
+    res.cookie('username', username);
+    res.redirect('/home') 
     }).catch((error) => {console.error("Auth error:" + error); res.status(500).send(error)} );
   }
 );
@@ -153,6 +152,49 @@ app.get("/profile",
   }
 );
 
+app.get("/courses",
+  function (req, res) {
+    try {
+      const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+      res.sendFile(__dirname + "/courses.html");
+    } catch (error) {
+      res.status(401).send("Unauthorized");
+    }
+  }
+);
+
+app.get("/api/potentialFriends",
+  function (req, res) {
+    try {
+      // Check for authorization
+      const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+      db.getPotentialFriends(decoded.id).then((potentialFriends) => {
+        res.status(200).send(potentialFriends);
+      }).catch((error) => {
+        console.error(error);
+      });
+    } catch (error) {
+      res.status(401).send(error);
+    }
+  }
+);
+
+app.get("/api/courses",
+  function (req, res) {
+    try {
+      // Check for authorization
+      const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+      db.getCourses().then((courses) => {
+        res.send(courses)
+      }).catch((error) => {
+        console.error(error);
+      });
+    } catch (error) {
+      res.status(401).send("Unauthorized.");
+    }
+  }
+);
+
 app.post("/profile",
   function (req, res) {
     let username = req.body.username;
@@ -180,6 +222,16 @@ app.post("/profile",
   }
 );
 
+app.get("/api/courses",
+  function (req, res) {
+    try {
+      const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+      res.status(200).send()
+    } catch (error) {
+      res.status(401).send(error);
+    }
+  }
+)
 app.get("/api/test",
   function (req, res) {
     try {
@@ -192,16 +244,24 @@ app.get("/api/test",
 )
 
 app.get("/chat",
-  function (req, res) {
-    try {
-      // Check for authorization
-      const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
-      res.sendFile(__dirname + "/chat.html")
-      }
-    catch (error) {
-      res.status(401).send("Unauthorized.");
+    function (req, res) {
+        try {
+            // Check for authorization
+            const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+            res.sendFile(__dirname + "/chat.html")
+        }
+        catch (error) {
+            res.status(401).send("Unauthorized.");
+        }
     }
-  }
-)
+);
+
+app.get("/getUsername",
+    function (req, res) {
+        console.log("CALLED!!!!!!!!!!!!!!!!!!!!!!!");
+        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + req.cookies.username);    
+        res.send(req.cookies.username);
+    }
+);
 
 app.listen(8080, "127.0.0.1");
