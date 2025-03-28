@@ -31,9 +31,9 @@ db.serialize(() => {
     
     db.run(`
         CREATE TABLE IF NOT EXISTS Course (
-        user_id INTEGER NOT NULL,
-        course TEXT NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES User(id)
+        name TEXT NOT NULL,
+        professor TEXT NOT NULL,
+        description TEXT NOT NULL
         );
     `, (err) => { if (err) { console.error('Error creating table Course.' + err) } }); 
 
@@ -63,7 +63,8 @@ db.serialize(() => {
   db.run(`
           CREATE TABLE IF NOT EXISTS Follows (
           user_id TEXT NOT NULL,
-          course TEXT NOT NULL CONSTRAINT CheckCourse CHECK (course IN ('Databases', 'Webtech', 'Imperatief Programmeren', 'Introductieproject')),
+          course TEXT NOT NULL, 
+          FOREIGN KEY (course) REFERENCES Course(name),
           FOREIGN KEY (user_id) REFERENCES User(id)
         )
     `, (err) => {if (err) {console.error('Error creating table Follows.')}});
@@ -154,12 +155,29 @@ function getMessage() {
   });
 }
 
-function getPotentialFriend(user_id) {
+function getPotentialFriends(user_id) {
   // promises will handle the async stuff
   return new Promise((resolve, reject) => {
-    db.get("SELECT * from User WHERE id = ?", [user_id], (err, row) => {
+    // Select all users that aren't the original user and courses that follow the same course as the input user.
+    db.all(`SELECT ff.user_id, ff.course, u.first_name, u.last_name 
+            FROM Follows fu JOIN Follows ff JOIN User u 
+            ON fu.user_id = ? AND ff.course = fu.course AND ff.user_id != ? AND ff.user_id = u.id
+            ORDER BY ff.course`, [user_id, user_id], (err, rows) => {
       if (err) {
-        reject("Error getting userdata.");
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
+function getCourses() {
+  // promises will handle the async stuff
+  return new Promise((resolve, reject) => {
+    db.get("SELECT * from Course", (err, row) => {
+      if (err) {
+        reject("Error getting Course data.");
       } else {
         resolve(row);
       }
@@ -229,6 +247,9 @@ module.exports = {
   createUser,
   createMessage,
   getMessage,
+  getCourses,
+  getUserdata,
+  getPotentialFriends,
   authorizeUser,
   getUserdata,
   updateUserdata,
