@@ -45,7 +45,7 @@ app.post("/api/register",
     db.createUser(username, password, first_name, last_name, age, email, major, (err) => {
       if (err) {
         console.log(err);
-        res.status(500).send("Failed to create user: " + err.message);
+        res.status(500).send("Failed to create user: " + err);
       } else {
           res.redirect("/login");
       }
