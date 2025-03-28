@@ -7,10 +7,19 @@ async function fetchUserInfo() {
     document.getElementById("age").value = data.age || '';
     document.getElementById("email").value = data.email || '';
     document.getElementById("major").value = data.major || '';
-
   } catch (error) {
    console.error("Error:", error);
   }
+}
+
+function toggleProfile(displayProfile){
+    const profile = document.getElementById("profile-container");
+    if (displayProfile) {
+        profile.style.display = "flex";
+        fetchUserInfo();
+    } else {
+        profile.style.display = "none";
+    }
 }
 
 // When the elements are loaded, start a loop fetching the messages.

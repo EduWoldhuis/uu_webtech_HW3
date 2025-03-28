@@ -4,8 +4,6 @@ async function fetchMessages() {
     messages = await fetch("/api/message", { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data })
     const container = document.getElementById("message-container");
     container.innerHTML = ""; 
-
-    // The user cookie is the second cookie, we grab the value after the =. TODO: change this goofy method
     username = document.cookie.split(' ')[1].split('=')[1]
 
     messages.forEach(msg => {
@@ -18,21 +16,34 @@ async function fetchMessages() {
     messageElement.textContent = msg.username + ": " + msg.message
     container.appendChild(messageElement);
     });
-
+        messages.forEach(msg => {
+        const messageElement = document.createElement("p");
+            if (msg.username == username) {
+                messageElement.className = "user-message";
+            } else {
+                messageElement.className = "other-message";
+            }
+        messageElement.textContent = msg.username + ": " + msg.message
+                messageElement.textContent += " : " +  username + " : " + msg.username
+        container.appendChild(messageElement);
+        });
   } catch (error) {
     console.error("Error:", error);
     document.getElementById("message-container").textContent = "Failed to load messages.";
   }
 }
 
-function toggleChat() {
-    const container = document.getElementById("message-container");
-    console.log(container.style.display);
-    if (container.style.display == "none") {
-        container.style.display = "block";
+function toggleChat(displayChat) {
+    const chat = document.getElementById("chat");
+    console.log(chat.style.display);
+    if (displayChat) {
+        chat.style.display = "flex";
         toggleMessageLoop(true);
+
+        const container = document.getElementById("message-container");
+        container.scrollTop = container.scrollHeight;
     } else {
-        container.style.display = "none";
+        chat.style.display = "none";
         toggleMessageLoop(false);
     }
 }
@@ -47,10 +58,16 @@ function toggleMessageLoop(receiveMessages) {
     }
 }
 
+function clearChatbox() {
+    setTimeout(() => {
+        const chatBox = document.getElementById("chat-box");
+        chatBoxInput = chatBox.querySelector("input");
+        chatBoxInput.value = "";
+    }, 0);
+}
+
 function onDomLoaded() {
-    document.getElementById("chat-button").addEventListener("click", toggleChat);
-    const container = document.getElementById("message-container");
-    container.style.display = "none";
+    document.getElementById("chat-box").querySelector("button").addEventListener("click", clearChatbox);
 }
 
 document.addEventListener("DOMContentLoaded", onDomLoaded);

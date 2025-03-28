@@ -15,8 +15,8 @@ section{
 form{
     display: flex;
     flex-direction: column;
-    height: 50vh;
-    width: 20vw;
+    height: auto;
+    width: auto;
     background-color: white;
 }
 
@@ -39,5 +39,21 @@ input{
 a{
     font-size: 20px;
     color: black;
-    margin: 20px 0 0 0;
+    margin: 20px;
+}
+
+#errorMessage {
+    display: inline;
+
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    color: red;
+
+    background: white;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
