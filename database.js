@@ -76,43 +76,39 @@ db.serialize(() => {
     `, (err) => {if (err) {console.error('Error creating table Friend.')}});
 });
 
-function createUser(username, password, first_name, last_name, age, email, major) {
-  if(validateInput(username, first_name, last_name, age, email, major)) {
+function createUser(username, password, first_name, last_name, age, email, major, callback) {
+  validate = validateInput(username, first_name, last_name, age, email, major)
+  if (validate === true) {
     // SHA512 to prevent easy bruteforcing
     var password = crypto.createHash('sha512').update(password).digest('hex');
     const insertQuery = db.prepare("INSERT INTO User (username, password, first_name, last_name, age, email, major) VALUES (?, ?, ?, ?, ?, ?, ?)");
     insertQuery.run([username, password, first_name, last_name, age, email, major], (err) => {if (err) {console.error("error inserting new user:" + err);}});
     insertQuery.finalize();
+    callback(null);
   }
   else {
-    console.error("Formatting error");
+    callback(validate);
   }
 }
 
 function validateInput(username, first_name, last_name, age, email, major) {
   if (!/^[A-Za-z][A-Za-z0-9_]{2,9}$/.test(username)) {
-    console.error("Invalid username! It should start with a letter and be 3-10 characters long.");
-    return false;
+    return "Invalid username! It should start with a letter and be 3-10 characters long.";
   }
   if (!/^[A-Za-z]+$/.test(first_name)) {
-    console.error("Invalid first name! It should only include letters.");
-    return false;
+    return "Invalid first name! It should only include letters.";
   }
   if (!/^[A-Za-z]+$/.test(last_name)) {
-    console.error("Invalid first name! It should only include letters.");
-    return false;
+    return "Invalid first name! It should only include letters.";
   }
   if (age < 0 || age > 100) {
-    console.error("Invalid age! It should be 0-100");
-    return false;
+    return "Invalid age! It should be 0-100";
   };
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.toLowerCase())) {   //regex from https://stackoverflow.com/questions/46155/
-    console.error("Invalid email!");
-    return false;
+    return "Invalid email!";
   };
   if (!/^[A-Za-z\s]+$/.test(major)) {
-    console.error("Invalid major!");
-    return false;
+    return "Invalid major!";
   }
 
   return true;
