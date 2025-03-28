@@ -33,26 +33,75 @@ header{
     margin: 2vh;
 }
 
-#message-container{
+section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: lightblue;
+    text-align: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    width: 50vw;
+}
+
+#message-container {
     background-color: gray;
     margin: 20px;
     min-height: 50vh;
     max-height: 50vh;
+    min-width: 80vw;
     text-align: center;
     overflow-y: auto;
+}
+
+#chat form {
+    height: 20vh;
+    width: 80vw;
+    background-color: white;
+    margin: 20px 0
+}
+
+#chat input {
+    height: 40px;
+    width: 90%;
+    font-size: 20px;
+    margin: 10px 0;
+    border: 1px solid blue;
+}
+
+#chat button{
+    min-width: 200px;
+    min-height: 30px;
 }
 
 .user-message {
     text-align: right;
     color: green;
     display: block;
+    margin: 20px 20px;
 }
 
 .other-message {
     text-align: left;
     color: yellow;
     display: block;
+    margin: 20px 20px;
 }
+
+#profile-container {
+    font-size: 30px;
+    text-align: center;
+    height: 60vh;
+    margin: 10vh 0 0 0;
+}
+
 
 @media(max-width: 600px){
     header{

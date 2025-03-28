@@ -60,7 +60,7 @@ app.post("/api/message",
     let message = req.body.message;
     try {
       const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
-      let uid = decoded.id;
+        let uid = decoded.id;
 
       db.createMessage(uid, message, (err) => {
         if (err) {
@@ -257,6 +257,5 @@ app.get("/chat",
         }
     }
 );
-
 
 app.listen(8080, "127.0.0.1");

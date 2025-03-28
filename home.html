@@ -4,7 +4,9 @@
     <meta title="Home page of ...">
     <meta description="this is a social media platform for students">
     <link rel="stylesheet" href="css/home.css">
+    <script src="navigation.js"></script>
     <script src="chat.js"></script>
+    <script src="profile.js"></script>
 </head>
 <body>
     <header>
@@ -14,25 +16,39 @@
             <button id="chat-button">
                 <img class="icon" src="images/chat-icon.png">
             </button>
-            <a>
-                <img class="icon" src="images/home-icon.png">
-            </a>
+            <button id="profile-button">
+                <img class="icon" src="images/profile-blank.png">
+            </button>
             <a>
                 <img class="icon" src="images/home-icon.png" >
             </a>
         </div>
     </header>
 
-    <section id="message-container">
+    <section id="chat">
         <h1>Chat</h1>
-    </section>
+        <div id="message-container">
 
-    <button onclick="toggleChat()">Toggle chat</button>
+        </div>
+        <form id="chat-box" action="/api/message" method="POST" target="hiddenFrame">
+            <input type="text" name="message" placeholder="message" required>
+            <button type="submit">Send</button>
+        </form>
+    </section>
+    
     <iframe name="hiddenFrame" width="0" height="0" border="0" style="display: none"></iframe>
     <!-- Hidden iframe so the form doesn't redirect -->
-    <form action="/api/message" method="POST" target="hiddenFrame">
-        <input type="text" name="message" placeholder="message" required>
-        <button type="submit">Send</button>
-    </form>
-
+    
+    <section id="profile-container">
+        <h2>Profile</h2>
+        <form action="/api/changeInformation" method="post">
+            <input id="username" type="text" name="username" required placeholder="username">
+            <input id="first_name" type="text" name="first_name" required placeholder="first name">
+            <input id="last_name" type="text" name="last_name" required placeholder="last name">
+            <input id="major" type="text" name="major" required placeholder="Computer science">
+            <input id="email" type="text" name="email" required placeholder="student@uu.nl">
+            <input id="age" type="number" name="age" required>
+            <button type="submit" class="change-button">Change</button>
+        </form>
+    </section>
 </body>
