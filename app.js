@@ -256,12 +256,5 @@ app.get("/chat",
     }
 );
 
-app.get("/getUsername",
-    function (req, res) {
-        console.log("CALLED!!!!!!!!!!!!!!!!!!!!!!!");
-        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + req.cookies.username);    
-        res.send(req.cookies.username);
-    }
-);
 
 app.listen(8080, "127.0.0.1");

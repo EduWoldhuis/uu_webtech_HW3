@@ -25,8 +25,9 @@
 
     <section id="message-container">
         <h1>Chat</h1>
-
     </section>
+
+    <button onclick="toggleChat()">Toggle chat</button>
     <iframe name="hiddenFrame" width="0" height="0" border="0" style="display: none"></iframe>
     <!-- Hidden iframe so the form doesn't redirect -->
     <form action="/api/message" method="POST" target="hiddenFrame">

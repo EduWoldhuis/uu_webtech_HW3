@@ -5,7 +5,8 @@ async function fetchMessages() {
     const container = document.getElementById("message-container");
     container.innerHTML = ""; 
 
-    const username = await fetch("/getUsername", { method: 'GET' }).then(x => x.text()).then((value) => {return value;}).catch((error) => {console.log("Error in chat.js at getUsername: " + error);});
+    // The user cookie is the second cookie, we grab the value after the =. TODO: change this goofy method
+    username = document.cookie.split(' ')[1].split('=')[1]
 
     messages.forEach(msg => {
     const messageElement = document.createElement("p");
@@ -15,7 +16,6 @@ async function fetchMessages() {
             messageElement.className = "other-message";
         }
     messageElement.textContent = msg.username + ": " + msg.message
-            messageElement.textContent += " : " +  username + " : " + msg.username
     container.appendChild(messageElement);
     });
 
