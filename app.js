@@ -59,7 +59,7 @@ app.post("/api/message",
     let message = req.body.message;
     try {
       const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
-      let uid = decoded.id;
+        let uid = decoded.id;
 
       db.createMessage(uid, message, (err) => {
         if (err) {
@@ -259,8 +259,6 @@ app.get("/chat",
 
 app.get("/getUsername",
     function (req, res) {
-        console.log("CALLED!!!!!!!!!!!!!!!!!!!!!!!");
-        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + req.cookies.username);    
         res.send(req.cookies.username);
     }
 );

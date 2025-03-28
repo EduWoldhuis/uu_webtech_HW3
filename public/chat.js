@@ -1,38 +1,39 @@
 let fetchMessagesInterval;
 async function fetchMessages() {
     try {
-    messages = await fetch("/api/message", { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data })
-    const container = document.getElementById("message-container");
-    container.innerHTML = ""; 
+        messages = await fetch("/api/message", { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data })
+        const container = document.getElementById("message-container");
+        container.innerHTML = ""; 
+        const username = await fetch("/getUsername", { method: 'GET' }).then(x => x.text()).then((value) => { return value; }).catch((error) => { console.log("Error in chat.js at getUsername: " + error); });
 
-    const username = await fetch("/getUsername", { method: 'GET' }).then(x => x.text()).then((value) => {return value;}).catch((error) => {console.log("Error in chat.js at getUsername: " + error);});
-
-    messages.forEach(msg => {
-    const messageElement = document.createElement("p");
-        if (msg.username == username) {
-            messageElement.className = "user-message";
-        } else {
-            messageElement.className = "other-message";
-        }
-    messageElement.textContent = msg.username + ": " + msg.message
-            messageElement.textContent += " : " +  username + " : " + msg.username
-    container.appendChild(messageElement);
-    });
-
+        messages.forEach(msg => {
+        const messageElement = document.createElement("p");
+            if (msg.username == username) {
+                messageElement.className = "user-message";
+            } else {
+                messageElement.className = "other-message";
+            }
+        messageElement.textContent = msg.username + ": " + msg.message
+                messageElement.textContent += " : " +  username + " : " + msg.username
+        container.appendChild(messageElement);
+        });
   } catch (error) {
     console.error("Error:", error);
     document.getElementById("message-container").textContent = "Failed to load messages.";
   }
 }
 
-function toggleChat() {
-    const container = document.getElementById("message-container");
-    console.log(container.style.display);
-    if (container.style.display == "none") {
-        container.style.display = "block";
+function toggleChat(displayChat) {
+    const chat = document.getElementById("chat");
+    console.log(chat.style.display);
+    if (displayChat) {
+        chat.style.display = "flex";
         toggleMessageLoop(true);
+
+        const container = document.getElementById("message-container");
+        container.scrollTop = container.scrollHeight;
     } else {
-        container.style.display = "none";
+        chat.style.display = "none";
         toggleMessageLoop(false);
     }
 }
@@ -47,10 +48,16 @@ function toggleMessageLoop(receiveMessages) {
     }
 }
 
+function clearChatbox() {
+    setTimeout(() => {
+        const chatBox = document.getElementById("chat-box");
+        chatBoxInput = chatBox.querySelector("input");
+        chatBoxInput.value = "";
+    }, 0);
+}
+
 function onDomLoaded() {
-    document.getElementById("chat-button").addEventListener("click", toggleChat);
-    const container = document.getElementById("message-container");
-    container.style.display = "none";
+    document.getElementById("chat-box").querySelector("button").addEventListener("click", clearChatbox);
 }
 
 document.addEventListener("DOMContentLoaded", onDomLoaded);
