@@ -33,16 +33,18 @@ app.get("/login", function (req, res) {
 
 app.post("/api/register",
   function (req, res) {
+    console.log(req.body);
     let username = req.body.username;
     let password = req.body.password;
     let first_name = req.body.first_name;
     let last_name = req.body.last_name;
-    let age = req.body.age;
-    let email = req.body.email;
     let major = req.body.major;
+    let email = req.body.email;
+    let age = req.body.age;
 
-    console.log(username, password, first_name, last_name, age, email, major);
-    db.createUser(username, password, first_name, last_name, age, email, major, (err) => {
+
+    console.log(username, password, first_name, last_name, major, email, age);
+    db.createUser(username, password, first_name, last_name, major, email, age, (err) => {
       if (err) {
         console.log(err);
         res.status(500).send("Failed to create user: " + err);

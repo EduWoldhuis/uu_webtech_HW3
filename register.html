@@ -4,18 +4,19 @@
     <meta title="Login page of ...">
     <meta description="Login page or create an acoount">
     <link rel="stylesheet" href="css/register.css">
+    <script src="js/register.js"></script>
 </head>
 <body>
     <section>
         <h1>WEBTECH</h1>
-        <form action="/api/register" method="post">
+        <form id="registerForm">
             <input type="text" name="username" required placeholder="Username"> 
             <input type="password" name="password" required placeholder="Password">
             <input type="text" name="first_name" required placeholder="First name"> 
             <input type="text" name="last_name" required placeholder="Last name"> 
             <input type="text" name="major" required placeholder="Computer science">
             <input type="text" name="email" required placeholder="student@uu.nl"> 
-            <input type="number" name="age" required placeholder="Age" min="0" max="100">
+            <input type="number" name="age" required placeholder="Age">
             <button type="submit" class="register-button">Register</button>
             <a href="/login">Log in</a>
         </form>
