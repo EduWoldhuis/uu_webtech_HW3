@@ -1,4 +1,3 @@
-//asdasjhadsdas
 var fs = require("fs");
 var file = "test.db";
 var exists = fs.existsSync(file);
@@ -133,6 +132,19 @@ function getMessage() {
         reject("Error getting messages.");
       } else {
           resolve(rows);
+      }
+    });
+  });
+}
+
+function getPotentialFriend(user_id) {
+  // promises will handle the async stuff
+  return new Promise((resolve, reject) => {
+    db.get("SELECT * from User WHERE id = ?", [user_id], (err, row) => {
+      if (err) {
+        reject("Error getting userdata.");
+      } else {
+        resolve(row);
       }
     });
   });
