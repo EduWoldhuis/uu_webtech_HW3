@@ -1,11 +1,21 @@
 let fetchMessagesInterval;
 async function fetchMessages() {
     try {
-        messages = await fetch("/api/message", { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data })
-        const container = document.getElementById("message-container");
-        container.innerHTML = ""; 
-        const username = await fetch("/getUsername", { method: 'GET' }).then(x => x.text()).then((value) => { return value; }).catch((error) => { console.log("Error in chat.js at getUsername: " + error); });
+    messages = await fetch("/api/message", { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data })
+    const container = document.getElementById("message-container");
+    container.innerHTML = ""; 
+    username = document.cookie.split(' ')[1].split('=')[1]
 
+    messages.forEach(msg => {
+    const messageElement = document.createElement("p");
+        if (msg.username == username) {
+            messageElement.className = "user-message";
+        } else {
+            messageElement.className = "other-message";
+        }
+    messageElement.textContent = msg.username + ": " + msg.message
+    container.appendChild(messageElement);
+    });
         messages.forEach(msg => {
         const messageElement = document.createElement("p");
             if (msg.username == username) {

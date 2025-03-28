@@ -44,13 +44,12 @@ app.post("/api/register",
     console.log(username, password, first_name, last_name, age, email, major);
     db.createUser(username, password, first_name, last_name, age, email, major, (err) => {
       if (err) {
-        console.error("Error inserting:", err.message);
-        res.status(500).send("Failed to create user: " + err.message);
+        console.log(err);
+        res.status(500).send("Failed to create user: " + err);
       } else {
-        res.send("User created successfully: " + username);
+          res.redirect("/login");
       }
-    });
-    res.redirect("/login");
+    }); 
   }
 );
 
@@ -254,12 +253,6 @@ app.get("/chat",
         catch (error) {
             res.status(401).send("Unauthorized.");
         }
-    }
-);
-
-app.get("/getUsername",
-    function (req, res) {
-        res.send(req.cookies.username);
     }
 );
 
