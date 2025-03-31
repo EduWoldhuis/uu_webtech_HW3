@@ -21,21 +21,21 @@ db.serialize(() => {
         );
     `, (err) => {if (err) {console.error('Error creating table User.')}}); 
 
-    db.run(`
-        CREATE TABLE IF NOT EXISTS Hobby (
-        user_id INTEGER NOT NULL,
-        hobby TEXT NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES User(id)
-        );
-    `, (err) => { if (err) { console.error('Error creating table Hobby.' + err) } }); 
-    
-    db.run(`
-        CREATE TABLE IF NOT EXISTS Course (
-        name TEXT NOT NULL,
-        professor TEXT NOT NULL,
-        description TEXT NOT NULL
-        );
-    `, (err) => { if (err) { console.error('Error creating table Course.' + err) } }); 
+  db.run(`
+          CREATE TABLE IF NOT EXISTS Hobby (
+          user_id INTEGER NOT NULL,
+          hobby TEXT NOT NULL,
+          FOREIGN KEY (user_id) REFERENCES User(id)
+      );
+  `, (err) => { if (err) { console.error('Error creating table Hobby.' + err) } }); 
+  
+  db.run(`
+          CREATE TABLE IF NOT EXISTS Course (
+          name TEXT NOT NULL,
+          professor TEXT NOT NULL,
+          description TEXT NOT NULL
+      );
+  `, (err) => { if (err) { console.error('Error creating table Course.' + err) } }); 
 
 
   db.run(`
@@ -172,11 +172,11 @@ function getPotentialFriends(user_id) {
 function getCourses() {
   // promises will handle the async stuff
   return new Promise((resolve, reject) => {
-    db.get("SELECT * from Course", (err, row) => {
+    db.all("SELECT * from Course", (err, rows) => {
       if (err) {
         reject("Error getting Course data.");
       } else {
-        resolve(row);
+        resolve(rows);
       }
     });
   });
