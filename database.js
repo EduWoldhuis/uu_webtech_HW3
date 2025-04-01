@@ -195,6 +195,19 @@ function getUserdata(user_id) {
   });
 }
 
+function getUserCourses(user_id) {
+  // promises will handle the async stuff
+  return new Promise((resolve, reject) => {
+    db.all("SELECT * from Follows WHERE user_id = ?", [user_id], (err, rows) => {
+      if (err) {
+        reject("Error getting follow data.");
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
 function updateUserdata(user_id, username, first_name, last_name, age, email, major, courses, callback) {
   if (!username.match("^[A-Za-z][A-Za-z0-9_]{2,9}$")) { //regex from https://laasyasettyblog.hashnode.dev/validating-username-using-regex
     callback("Invalid username! It should start with a letter and be 3-10 characters long.");
@@ -263,6 +276,7 @@ module.exports = {
   getMessage,
   getCourses,
   getUserdata,
+  getUserCourses,
   getPotentialFriends,
   authorizeUser,
   getUserdata,

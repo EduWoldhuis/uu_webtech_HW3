@@ -10,6 +10,7 @@ async function fetchUserInfo() {
 
     submitButton = document.querySelectorAll("button")[0]
     coursesData = await fetch("/api/courses", {method: 'GET', credentials: 'include'}).then(x => x.json()).then(data => {return data})
+    userCoursesData = await fetch("/api/follows", {method: 'GET', credentials: 'include'}).then(x => x.json()).then(data => {return data})
     coursesData.forEach(courseData => {
         labelElement = document.createElement("label")
         labelElement.innerText = courseData.name
@@ -20,6 +21,13 @@ async function fetchUserInfo() {
         submitButton.insertAdjacentElement("beforebegin", labelElement)
         submitButton.insertAdjacentElement("beforebegin", inputElement)
     });
+    if (!Array.isArray(userCoursesData)){
+        userCoursesData = userCoursesData ? [userCoursesData] : [];
+    }
+    userCoursesData.forEach(courseData => {
+        courseElement = document.querySelectorAll(`input[value='${courseData.course}']`)[0]
+        courseElement.checked = true;
+    })
 
 
   } catch (error) {

@@ -197,6 +197,22 @@ app.get("/api/courses",
   }
 );
 
+app.get("/api/follows",
+  function (req, res) {
+    try {
+      // Check for authorization
+      const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+      db.getUserCourses(decoded.id).then((courses) => {
+        res.send(courses)
+      }).catch((error) => {
+        console.error(error);
+      });
+    } catch (error) {
+      res.status(401).send("Unauthorized.");
+    }
+  }
+);
+
 app.post("/profile",
   function (req, res) {
     let username = req.body.username;
@@ -230,16 +246,6 @@ app.post("/profile",
   }
 );
 
-app.get("/api/courses",
-  function (req, res) {
-    try {
-      const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
-      res.status(200).send()
-    } catch (error) {
-      res.status(401).send(error);
-    }
-  }
-)
 app.get("/api/test",
   function (req, res) {
     try {
