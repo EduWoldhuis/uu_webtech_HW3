@@ -21,21 +21,21 @@ db.serialize(() => {
         );
     `, (err) => {if (err) {console.error('Error creating table User.')}}); 
 
-    db.run(`
-        CREATE TABLE IF NOT EXISTS Hobby (
-        user_id INTEGER NOT NULL,
-        hobby TEXT NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES User(id)
-        );
-    `, (err) => { if (err) { console.error('Error creating table Hobby.' + err) } }); 
-    
-    db.run(`
-        CREATE TABLE IF NOT EXISTS Course (
-        name TEXT NOT NULL,
-        professor TEXT NOT NULL,
-        description TEXT NOT NULL
-        );
-    `, (err) => { if (err) { console.error('Error creating table Course.' + err) } }); 
+  db.run(`
+          CREATE TABLE IF NOT EXISTS Hobby (
+          user_id INTEGER NOT NULL,
+          hobby TEXT NOT NULL,
+          FOREIGN KEY (user_id) REFERENCES User(id)
+      );
+  `, (err) => { if (err) { console.error('Error creating table Hobby.' + err) } }); 
+  
+  db.run(`
+          CREATE TABLE IF NOT EXISTS Course (
+          name TEXT NOT NULL,
+          professor TEXT NOT NULL,
+          description TEXT NOT NULL
+      );
+  `, (err) => { if (err) { console.error('Error creating table Course.' + err) } }); 
 
 
   db.run(`
@@ -93,8 +93,8 @@ db.serialize(() => {
     `, (err) => {if (err) {console.error('Error creating table Friend.')}});
 });
 
-function createUser(username, password, first_name, last_name, age, email, major, callback) {
-  validate = validateInput(username, first_name, last_name, age, email, major)
+function createUser(username, password, first_name, last_name, major, email, age, callback) {
+  validate = validateInput(username, first_name, last_name, major, email, age)
   if (validate === true) {
     // SHA512 to prevent easy bruteforcing
     var password = crypto.createHash('sha512').update(password).digest('hex');
@@ -108,7 +108,7 @@ function createUser(username, password, first_name, last_name, age, email, major
   }
 }
 
-function validateInput(username, first_name, last_name, age, email, major) {
+function validateInput(username, first_name, last_name, major, email, age) {
   if (!/^[A-Za-z][A-Za-z0-9_]{2,9}$/.test(username)) {
     return "Invalid username! It should start with a letter and be 3-10 characters long.";
   }
@@ -118,15 +118,16 @@ function validateInput(username, first_name, last_name, age, email, major) {
   if (!/^[A-Za-z]+$/.test(last_name)) {
     return "Invalid first name! It should only include letters.";
   }
-  if (age < 0 || age > 100) {
-    return "Invalid age! It should be 0-100";
-  };
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.toLowerCase())) {   //regex from https://stackoverflow.com/questions/46155/
-    return "Invalid email!";
-  };
   if (!/^[A-Za-z\s]+$/.test(major)) {
     return "Invalid major!";
   }
+  console.log(email);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.toLowerCase())) {   //regex from https://stackoverflow.com/questions/46155/
+    return "Invalid email!";
+  };
+  if (age < 0 || age > 100) {
+    return "Invalid age! It should be 0-100";
+  };
 
   return true;
 }
@@ -171,11 +172,11 @@ function getPotentialFriends(user_id) {
 function getCourses() {
   // promises will handle the async stuff
   return new Promise((resolve, reject) => {
-    db.get("SELECT * from Course", (err, row) => {
+    db.all("SELECT * from Course", (err, rows) => {
       if (err) {
         reject("Error getting Course data.");
       } else {
-        resolve(row);
+        resolve(rows);
       }
     });
   });
@@ -194,17 +195,15 @@ function getUserdata(user_id) {
   });
 }
 
-function updateUserdata(user_id, username, password, first_name, last_name, age, email, major, callback) {
+function updateUserdata(user_id, username, first_name, last_name, age, email, major, callback) {
   if (!username.match("^[A-Za-z][A-Za-z0-9_]{2,9}$")) { //regex from https://laasyasettyblog.hashnode.dev/validating-username-using-regex
     console.error("Invalid username! It should start with a letter and be 3-10 characters long.");
     return;
   }
-  // SHA512 to prevent easy bruteforcing
-  var password = crypto.createHash('sha512').update(password).digest('hex');
   const updateQuery = db.prepare(`UPDATE User 
-                                  SET username = ?, password = ?, first_name = ?, last_name = ?, age = ?, email = ?, major = ?
+                                  SET username = ?, first_name = ?, last_name = ?, age = ?, email = ?, major = ?
                                   WHERE id = ?`);
-  updateQuery.run([username, password, first_name, last_name, age, email, major, user_id], (err) => 
+  updateQuery.run([username, first_name, last_name, age, email, major, user_id], (err) => 
     {
       if (err) {
         console.error("error updating user:" + err);

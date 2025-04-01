@@ -7,6 +7,21 @@ async function fetchUserInfo() {
     document.getElementById("age").value = data.age || '';
     document.getElementById("email").value = data.email || '';
     document.getElementById("major").value = data.major || '';
+
+    submitButton = document.querySelectorAll("form")[0]
+    coursesData = await fetch("/api/courses", {method: 'GET', credentials: 'include'}).then(x => x.json()).then(data => {return data})
+    coursesData.forEach(courseData => {
+        labelElement = document.createElement("label")
+        labelElement.innerText = courseData.name
+        inputElement = document.createElement("input")
+        inputElement.type = "checkbox"
+        inputElement.name = "courses"
+        inputElement.value = courseData.name
+        submitButton.appendChild(labelElement)
+        submitButton.appendChild(inputElement)
+    });
+
+
   } catch (error) {
    console.error("Error:", error);
   }

@@ -24,7 +24,7 @@ async function fetchMessages() {
                 messageElement.className = "other-message";
             }
         messageElement.textContent = msg.username + ": " + msg.message
-                messageElement.textContent += " : " +  username + " : " + msg.username
+        //messageElement.textContent += " : " +  username + " : " + msg.username
         container.appendChild(messageElement);
         });
   } catch (error) {
