@@ -205,13 +205,20 @@ app.post("/profile",
     let age = req.body.age;
     let email = req.body.email;
     let major = req.body.major;
+
+    let courses = req.body.courses
+    // cooked
+    if (!Array.isArray(courses)) {
+        courses = courses ? [courses] : [];
+    }
+
     // We have to use promises because sqlite3 is built asyncronously.
     try {
       // Check for authorization
       const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
-      db.updateUserdata(decoded.id, username, first_name, last_name, age, email, major, (err) => {
+      db.updateUserdata(decoded.id, username, first_name, last_name, age, email, major, courses, (err) => {
         if (err) {
-          console.error("Error inserting:", err.message);
+          console.error("Error inserting:", err);
           res.status(500).send("Failed to update: " + err.message);
         } else {
           res.status(200).send("Updated successfully.");
