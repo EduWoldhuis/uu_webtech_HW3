@@ -8,7 +8,7 @@ async function fetchUserInfo() {
     document.getElementById("email").value = data.email || '';
     document.getElementById("major").value = data.major || '';
 
-    submitButton = document.querySelectorAll("form")[0]
+    submitButton = document.querySelectorAll("button")[0]
     coursesData = await fetch("/api/courses", {method: 'GET', credentials: 'include'}).then(x => x.json()).then(data => {return data})
     coursesData.forEach(courseData => {
         labelElement = document.createElement("label")
@@ -17,8 +17,8 @@ async function fetchUserInfo() {
         inputElement.type = "checkbox"
         inputElement.name = "courses"
         inputElement.value = courseData.name
-        submitButton.appendChild(labelElement)
-        submitButton.appendChild(inputElement)
+        submitButton.insertAdjacentElement("beforebegin", labelElement)
+        submitButton.insertAdjacentElement("beforebegin", inputElement)
     });
 
 
