@@ -9,6 +9,7 @@ var jwt = require("jsonwebtoken");
 var cookieParser = require("cookie-parser");
 
 var db = require("./database");
+const { userInfo } = require('os');
 
 const app = express();
 
@@ -18,8 +19,16 @@ app.use(
   cookieParser()
 );
 
-app.get("/",function (req, res) {
+app.get("/", function (req, res) {
   res.sendFile(__dirname + "/register.html");
+});
+
+app.get("/getUsername", function (req, res){
+    db.getUsername().then((username) => {
+        res.send(username)
+    }).catch((error) => {
+        console.error(error);
+    });
 });
 
 app.get("/home", function (req, res) {
@@ -30,6 +39,23 @@ app.get("/login", function (req, res) {
     res.sendFile(__dirname + "/login.html");
 })
 
+app.post("/api/changeInformation", function (req, res){
+    let user_id = req.cookies.user_id;
+    let username = req.body.username;
+    let first_name = req.body.first_name;
+    let last_name = req.body.last_name;
+    let age = req.body.age;
+    let email = req.body.email;
+    let major = req.body.major;
+
+    const updateUserDataDone = db.updateUserData(user_id, username, first_name, last_name, age, email, major);
+    if (updateUserDataDone !== true) {
+        alert(updateUserDataDone);
+        res.status(405);
+    }
+
+    res.redirect("/home")
+})
 
 app.post("/api/register",
   function (req, res) {
@@ -120,7 +146,7 @@ app.post("/api/login",
     console.log("uid:" + user[0].id);
     const token = jwt.sign({id: user[0].id}, 'secretKeyWebtech', {expiresIn: '1h',});
     res.cookie('authorization', token);
-    res.cookie('username', username);
+    res.cookie('id', user[0].id);
     res.redirect('/home') 
     }).catch((error) => {console.error("Auth error:" + error); res.status(500).send(error)} );
   }
