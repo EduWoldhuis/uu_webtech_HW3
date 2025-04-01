@@ -1,10 +1,10 @@
 let fetchMessagesInterval;
 async function fetchMessages() {
     try {
-    messages = await fetch("/api/message", { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data })
+        messages = await fetch("/api/message", { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data });
     const container = document.getElementById("message-container");
     container.innerHTML = ""; 
-    username = document.cookie.split(' ')[1].split('=')[1]
+    username = await fetch("/getUsername", { method: 'GET' }).then(x => x.json()).then(data => {return data });
 
     messages.forEach(msg => {
     const messageElement = document.createElement("p");

@@ -42,11 +42,17 @@
     <section id="profile-container">
         <h2>Profile</h2>
         <form action="/api/changeInformation" method="post">
+            <label for="username">Username</label>
             <input id="username" type="text" name="username" required placeholder="username">
+            <label for="first_name">First name</label>
             <input id="first_name" type="text" name="first_name" required placeholder="first name">
+            <label for="last_name">Last name</label>
             <input id="last_name" type="text" name="last_name" required placeholder="last name">
+            <label for="major">Major</label>
             <input id="major" type="text" name="major" required placeholder="Computer science">
+            <label for="email">Emailaddres</label>
             <input id="email" type="text" name="email" required placeholder="student@uu.nl">
+            <label for="age">Age</label>
             <input id="age" type="number" name="age" required>
             <button type="submit" class="change-button">Change</button>
         </form>

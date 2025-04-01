@@ -98,10 +98,28 @@ form {
 #profile-container {
     font-size: 30px;
     text-align: center;
-    height: 60vh;
-    margin: 10vh 0 0 0;
+    height: 90vh;
 }
 
+#profile-container form{
+    width: 300px;
+    height: 80vh;
+}
+
+#profile-container input{
+    height: 30px;
+    width: 250px;
+    font-size: 0.5em;
+}
+
+#profile-container label{
+    font-size: 0.5em;
+    margin: 20px 0px 0 0px;
+}
+
+h2{
+    margin: 10px;
+}
 
 @media(max-width: 600px){
     header{

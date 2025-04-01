@@ -209,9 +209,12 @@ function getUserCourses(user_id) {
 }
 
 function updateUserdata(user_id, username, first_name, last_name, age, email, major, courses, callback) {
-  if (!username.match("^[A-Za-z][A-Za-z0-9_]{2,9}$")) { //regex from https://laasyasettyblog.hashnode.dev/validating-username-using-regex
-    callback("Invalid username! It should start with a letter and be 3-10 characters long.");
-  }
+    let inputValidation = validateInput(username, first_name, last_name, major, email, age);
+
+    if (inputValidation !== true) {
+        return inputValidation;
+    }
+
   // First, delete all the information, then insert it again, for if courses are unfollowed.
   const deleteQuery = db.prepare("DELETE FROM FOLLOWS WHERE user_id = ?");
   deleteQuery.run([user_id], (err ) => {
@@ -232,6 +235,7 @@ function updateUserdata(user_id, username, first_name, last_name, age, email, ma
       }
     })
   });
+
   const updateQuery = db.prepare(`UPDATE User 
                                   SET username = ?, first_name = ?, last_name = ?, age = ?, email = ?, major = ?
                                   WHERE id = ?`);
@@ -241,12 +245,9 @@ function updateUserdata(user_id, username, first_name, last_name, age, email, ma
         console.error("error updating user:" + err);
         callback(err);
       }
-      else {
-        callback(null)
-      }
     });
-
-  updateQuery.finalize();
+    updateQuery.finalize();
+    return true;
 }
 
 function authorizeUser(username, password) {
@@ -264,6 +265,18 @@ function authorizeUser(username, password) {
   });
 }
 
+function getUsername(user_id) {
+    return new Promise((resolve, reject) => {
+        db.all("SELECT username FROM User WHERE id = ?", [user_id], (err, rows) => {
+            if (err) {
+                reject("Error getting username");
+            } else {
+                resolve(rows);
+            }
+        })
+    });
+}
+
 function closeDB() {
   db.close();
 }
@@ -277,9 +290,10 @@ module.exports = {
   getCourses,
   getUserdata,
   getUserCourses,
+  getUsername,
   getPotentialFriends,
   authorizeUser,
   getUserdata,
-  updateUserdata,
+  updateUserData,
   closeDB
 }
