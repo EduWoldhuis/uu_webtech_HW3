@@ -1,31 +1,49 @@
 let fetchMessagesInterval;
+let lastMessageID = 0; 
+let username = "";
+let userid = "8"; //TODO: Get current userid
+
+async function fetchUsername() {
+    try {
+      const response = await fetch(`/getUsername?userid=${userid}`, { method: 'GET' });
+      const data = await response.json();
+      username = data[0].username;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
 async function fetchMessages() {
     try {
-        messages = await fetch("/api/message", { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data });
-    const container = document.getElementById("message-container");
-    container.innerHTML = ""; 
-    username = await fetch("/getUsername", { method: 'GET' }).then(x => x.json()).then(data => {return data });
+        const response = await fetch(`/api/message?since=${lastMessageID}`, { method: 'GET', credentials: 'include' })
+        const newMessages = await response.json();
+        const container = document.getElementById("message-container");
+        newMessages.forEach(msg => {
+            console.log(msg.username);
+            console.log(username);
 
-    messages.forEach(msg => {
-    const messageElement = document.createElement("p");
-        if (msg.username == username) {
-            messageElement.className = "user-message";
-        } else {
-            messageElement.className = "other-message";
-        }
-    messageElement.textContent = msg.username + ": " + msg.message
-    container.appendChild(messageElement);
-    });
-        messages.forEach(msg => {
-        const messageElement = document.createElement("p");
+            const messageContainerElement = document.createElement("div");
+            const messageElement = document.createElement("p");
             if (msg.username == username) {
+                messageContainerElement.className = "user-message-box"
                 messageElement.className = "user-message";
             } else {
+                messageContainerElement.className = "other-message-box"
                 messageElement.className = "other-message";
             }
-        messageElement.textContent = msg.username + ": " + msg.message
-        //messageElement.textContent += " : " +  username + " : " + msg.username
-        container.appendChild(messageElement);
+
+            const userElement = document.createElement("p");
+            userElement.className = "user";
+            userElement.textContent = msg.username;
+
+            messageElement.textContent = msg.message;
+            container.appendChild(messageContainerElement);
+            messageContainerElement.appendChild(userElement);
+            messageContainerElement.appendChild(messageElement);
+
+            lastMessageID = msg.id;
+
+            container.scrollTop = container.scrollHeight;
         });
   } catch (error) {
     console.error("Error:", error);
@@ -50,9 +68,9 @@ function toggleChat(displayChat) {
 
 function toggleMessageLoop(receiveMessages) {
   // Immediately display the messages before starting the loop
-    fetchMessages();
+    fetchUsername().then(() => {fetchMessages();});
     if (receiveMessages) {
-        fetchMessagesInterval = setInterval(fetchMessages, 5000);
+        fetchMessagesInterval = setInterval(fetchMessages, 500);
     } else {
         clearInterval(fetchMessagesInterval);
     }

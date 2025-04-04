@@ -24,7 +24,8 @@ app.get("/", function (req, res) {
 });
 
 app.get("/getUsername", function (req, res){
-    db.getUsername().then((username) => {
+  const userid = parseInt(req.query.userid);
+    db.getUsername(userid).then((username) => {
         res.send(username)
     }).catch((error) => {
         console.error(error);
@@ -111,10 +112,11 @@ app.get("/",function (req, res) {
 app.get("/api/message",
   function (req, res) {
   // We have to use promises because sqlite3 is built asyncronously.
+    const since = parseInt(req.query.since) || 0;
     try {
       // Check for authorization
       const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
-      db.getMessage().then((messages) => {
+      db.getMessage(since).then((messages) => {
         res.send(messages)
         }).catch((error) => {
           console.error(error);

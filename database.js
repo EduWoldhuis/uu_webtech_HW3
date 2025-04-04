@@ -139,10 +139,14 @@ function createMessage(user_id, message, callback) {
   callback(null);
 }
 
-function getMessage() {
+function getMessage(since) {
   // promises will handle the async stuff
   return new Promise((resolve, reject) => {
-    db.all("SELECT m.message, u.username FROM Message m JOIN User u ON u.id = m.user_id", (err, rows) => {
+    const query = `SELECT m.id, m.message, u.username 
+                   FROM Message m 
+                   JOIN User u ON u.id = m.user_id
+                   WHERE m.id > ?`
+    db.all(query, [since], (err, rows) => {
       if (err) {
         reject("Error getting messages.");
       } else {
@@ -208,7 +212,7 @@ function getUserCourses(user_id) {
   });
 }
 
-function updateUserdata(user_id, username, first_name, last_name, age, email, major, courses, callback) {
+function updateUserData(user_id, username, first_name, last_name, age, email, major, courses, callback) {
     let inputValidation = validateInput(username, first_name, last_name, major, email, age);
 
     if (inputValidation !== true) {

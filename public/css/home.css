@@ -53,7 +53,10 @@ form {
 
 #message-container {
     background-color: gray;
-    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
     min-height: 50vh;
     max-height: 50vh;
     min-width: 80vw;
@@ -81,18 +84,53 @@ form {
     min-height: 30px;
 }
 
+.user {
+    padding: 0px;
+    margin: 0px;
+    text-align: left;
+    font-size: 10px;
+    color: black;
+}
+
+.user-message-box {
+    align-self: flex-end;
+    display: inline-block;
+    padding: 10px;
+    background-color: lightgreen;
+    border: 1px solid #000;
+    border-radius: 8px;
+    font-size: 36px;
+    line-height: 1.2;
+    min-width: 10%;
+    max-width: 48%;
+    word-wrap: break-word;
+}
+
+.other-message-box {
+    align-self: flex-start;
+    display: inline-block;
+    padding: 10px;
+    background-color: skyblue;
+    border: 1px solid #000;
+    border-radius: 8px;
+    font-size: 36px;
+    line-height: 1.2;
+    min-width: 10%;
+    max-width: 50%;
+    word-wrap: break-word;
+}
+
 .user-message {
-    text-align: right;
-    color: green;
+    text-align: left;
+    color: white;
     display: block;
-    margin: 20px 20px;
 }
 
 .other-message {
+    margin: 0px;
     text-align: left;
-    color: yellow;
+    color: white;
     display: block;
-    margin: 20px 20px;
 }
 
 #profile-container {
