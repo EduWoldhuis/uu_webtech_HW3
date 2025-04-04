@@ -1,9 +1,10 @@
 let fetchMessagesInterval;
 let lastMessageID = 0; 
 let username = "";
-let userid = "8"; //TODO: Get current userid
+let userid = "";
 
 async function fetchUsername() {
+    userid = document.cookie.split(' ')[1].split('=')[1]
     try {
       const response = await fetch(`/getUsername?userid=${userid}`, { method: 'GET' });
       const data = await response.json();
@@ -19,9 +20,6 @@ async function fetchMessages() {
         const newMessages = await response.json();
         const container = document.getElementById("message-container");
         newMessages.forEach(msg => {
-            console.log(msg.username);
-            console.log(username);
-
             const messageContainerElement = document.createElement("div");
             const messageElement = document.createElement("p");
             if (msg.username == username) {
@@ -53,7 +51,6 @@ async function fetchMessages() {
 
 function toggleChat(displayChat) {
     const chat = document.getElementById("chat");
-    console.log(chat.style.display);
     if (displayChat) {
         chat.style.display = "flex";
         toggleMessageLoop(true);
