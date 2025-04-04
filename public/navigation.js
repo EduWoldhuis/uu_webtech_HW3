@@ -1,18 +1,14 @@
-function selectNavigationItem(functionOfItem) {
-    const navigationOptions = [toggleChat, toggleProfile];
-    for (let i = 0; i < navigationOptions.length; i++) {
-        if (navigationOptions[i] == functionOfItem) {
-            navigationOptions[i](true);
-        } else {
-            navigationOptions[i](false);
-        }
-    }
+function clear() {
+  toggleChat(false);
+  toggleProfile(false);
 }
+
 function onDomLoaded() {
+    clear();
     let chatButton = document.getElementById("chat-button");
-    chatButton.addEventListener("click", () => { selectNavigationItem(toggleChat) });
+    chatButton.addEventListener("click", () => { clear(); toggleChat(true); });
     let profileButton = document.getElementById("profile-button");
-    profileButton.addEventListener("click", () => { selectNavigationItem(toggleProfile) });
+    profileButton.addEventListener("click", () => { clear(); toggleProfile(true); });
     selectNavigationItem(null);
 }
 

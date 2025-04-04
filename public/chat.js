@@ -12,7 +12,7 @@ async function fetchUsername() {
     } catch (error) {
       console.error(error);
     }
-  }
+}
 
 async function fetchMessages() {
     try {
