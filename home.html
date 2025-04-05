@@ -41,7 +41,7 @@
     
     <section id="profile-container">
         <h2>Profile</h2>
-        <form action="/api/changeInformation" method="post">
+        <form id="profile-form" action="/api/changeInformation" method="post" target: hiddenFrame>
             <label for="username">Username</label>
             <input id="username" type="text" name="username" required placeholder="username">
             <label for="first_name">First name</label>
@@ -54,7 +54,9 @@
             <input id="email" type="text" name="email" required placeholder="student@uu.nl">
             <label for="age">Age</label>
             <input id="age" type="number" name="age" required>
-            <button type="submit" class="change-button">Change</button>
+            <label id="courses_label">courses</label>
+            <input id="courses" name="courses"/>
+            <button type="submit" id="change-button">Change</button>
         </form>
     </section>
 </body>

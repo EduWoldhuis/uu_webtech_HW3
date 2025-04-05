@@ -124,6 +124,7 @@ form {
     text-align: left;
     color: white;
     display: block;
+    width: 40vw;
 }
 
 .other-message {
@@ -131,6 +132,7 @@ form {
     text-align: left;
     color: white;
     display: block;
+    width: 40vw;
 }
 
 #profile-container {
@@ -152,7 +154,22 @@ form {
 
 #profile-container label{
     font-size: 0.5em;
-    margin: 20px 0px 0 0px;
+    margin: 10px 0px 0 0px;
+}
+
+.course-tag{
+    margin: 0;
+    color: blue;
+    margin: 5px;
+}
+
+#course-container *{
+    
+    font-size: 15px;
+}
+
+#courses{
+    display: none;
 }
 
 h2{

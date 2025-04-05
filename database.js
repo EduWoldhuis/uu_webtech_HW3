@@ -2,6 +2,7 @@ var fs = require("fs");
 var file = "test.db";
 var exists = fs.existsSync(file);
 var crypto = require("crypto");
+const { rejects } = require("assert");
 
 var sqlite3 = require("sqlite3").verbose();
 var db = new sqlite3.Database(__dirname + "/test.db")
@@ -228,7 +229,8 @@ function updateUserData(user_id, username, first_name, last_name, age, email, ma
     }
   });
   const followsQuery = db.prepare("INSERT INTO FOLLOWS (user_id, course) VALUES (?, ?)");
-  courses.forEach(course => {
+    console.log("courses:" + courses);
+    courses.forEach(course => {
     if (!course.match("^[A-Za-z][A-Za-z0-9_ ]{3,60}$")) { 
       callback("Invalid course! It should start with a letter and be 4-60 characters long.");
     }

@@ -9,7 +9,6 @@ function onDomLoaded() {
     chatButton.addEventListener("click", () => { clear(); toggleChat(true); });
     let profileButton = document.getElementById("profile-button");
     profileButton.addEventListener("click", () => { clear(); toggleProfile(true); });
-    selectNavigationItem(null);
 }
 
 document.addEventListener("DOMContentLoaded", onDomLoaded);

@@ -40,7 +40,7 @@ app.get("/login", function (req, res) {
     res.sendFile(__dirname + "/login.html");
 })
 
-app.post("/api/changeInformation", function (req, res){
+app.post("/api/changeInformation", async function (req, res){
     let user_id = req.cookies.user_id;
     let username = req.body.username;
     let first_name = req.body.first_name;
@@ -48,8 +48,11 @@ app.post("/api/changeInformation", function (req, res){
     let age = req.body.age;
     let email = req.body.email;
     let major = req.body.major;
+    let courses = req.body.courses.split(",");
 
-    const updateUserDataDone = db.updateUserData(user_id, username, first_name, last_name, age, email, major);
+    console.log(user_id);
+
+    const updateUserDataDone = db.updateUserData(user_id, username, first_name, last_name, age, email, major, courses, console.log);
     if (updateUserDataDone !== true) {
         alert(updateUserDataDone);
         res.status(405);
@@ -171,15 +174,24 @@ app.get("/api/userdata",
   }
 );
 
+
+app.get("/courses", function (req, res) {
+    db.getCourses().then(courses => {
+        res.send(courses)
+    }).catch(error => {
+        console.log(error);
+    });
+});
+
 app.get("/profile",
-  function (req, res) {
-    try {
-      const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
-      res.sendFile(__dirname + "/profile.html");
-    } catch (error) {
-      res.status(401).send("Unauthorized");
+    function (req, res) {
+        try {
+          const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+          res.sendFile(__dirname + "/profile.html");
+        } catch (error) {
+          res.status(401).send("Unauthorized");
+        }
     }
-  }
 );
 
 app.get("/courses",

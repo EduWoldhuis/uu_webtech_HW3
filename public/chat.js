@@ -4,7 +4,8 @@ let username = "";
 let userid = "";
 
 async function fetchUsername() {
-    userid = document.cookie.split(' ')[1].split('=')[1]
+    userid = document.cookie.split(' ')[0].split('=')[1][0]
+    console.log(userid);
     try {
       const response = await fetch(`/getUsername?userid=${userid}`, { method: 'GET' });
       const data = await response.json();
