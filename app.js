@@ -41,21 +41,25 @@ app.get("/login", function (req, res) {
 })
 
 app.post("/api/changeInformation", async function (req, res){
-    let user_id = req.cookies.user_id;
+    let user_id = req.cookies.id;
     let username = req.body.username;
     let first_name = req.body.first_name;
     let last_name = req.body.last_name;
     let age = req.body.age;
     let email = req.body.email;
     let major = req.body.major;
-    let courses = req.body.courses.split(",");
-
-    console.log(user_id);
+    let courses;
+    if (req.body.courses == "") {
+        courses = [];
+    } else {
+        courses = req.body.courses.split(",");
+    }
 
     const updateUserDataDone = db.updateUserData(user_id, username, first_name, last_name, age, email, major, courses, console.log);
     if (updateUserDataDone !== true) {
-        alert(updateUserDataDone);
         res.status(405);
+    } else {
+  
     }
 
     res.redirect("/home")
@@ -63,7 +67,6 @@ app.post("/api/changeInformation", async function (req, res){
 
 app.post("/api/register",
   function (req, res) {
-    console.log(req.body);
     let username = req.body.username;
     let password = req.body.password;
     let first_name = req.body.first_name;
@@ -73,7 +76,6 @@ app.post("/api/register",
     let age = req.body.age;
 
 
-    console.log(username, password, first_name, last_name, major, email, age);
     db.createUser(username, password, first_name, last_name, major, email, age, (err) => {
       if (err) {
         console.log(err);
@@ -142,13 +144,11 @@ app.post("/api/login",
         console.log("authorization successful.")
       }
     }).then((user) => {
-    console.log("Users found:");
     console.log(user);
     if (user.length == 0) {
       res.redirect('/login');
       return;
     }
-    console.log("uid:" + user[0].id);
     const token = jwt.sign({id: user[0].id}, 'secretKeyWebtech', {expiresIn: '1h',});
     res.cookie('authorization', token);
     res.cookie('id', user[0].id);

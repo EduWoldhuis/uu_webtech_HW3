@@ -25,6 +25,12 @@ async function fetchUserInfo() {
             }
         }
 
+        //Remove old selector menu
+        const lastCourseContainer = document.getElementById("course-container");
+        if (lastCourseContainer) {
+            lastCourseContainer.remove();
+        }
+
         //Insert a selector to where you can choose courses and add the courses that are followd
         const courseContainer = createSelection(coursesData, filterdCoursesData);
         courseContainer.id = "course-container";

@@ -222,14 +222,13 @@ function updateUserData(user_id, username, first_name, last_name, age, email, ma
 
   // First, delete all the information, then insert it again, for if courses are unfollowed.
   const deleteQuery = db.prepare("DELETE FROM FOLLOWS WHERE user_id = ?");
-  deleteQuery.run([user_id], (err ) => {
+  deleteQuery.run([user_id], (err) => {
     if (err) {
       console.error("error following course:" + err); 
       callback(err);
     }
   });
   const followsQuery = db.prepare("INSERT INTO FOLLOWS (user_id, course) VALUES (?, ?)");
-    console.log("courses:" + courses);
     courses.forEach(course => {
     if (!course.match("^[A-Za-z][A-Za-z0-9_ ]{3,60}$")) { 
       callback("Invalid course! It should start with a letter and be 4-60 characters long.");
@@ -240,12 +239,12 @@ function updateUserData(user_id, username, first_name, last_name, age, email, ma
         callback(err);
       }
     })
-  });
+    });
 
-  const updateQuery = db.prepare(`UPDATE User 
+    const updateQuery = db.prepare(`UPDATE User 
                                   SET username = ?, first_name = ?, last_name = ?, age = ?, email = ?, major = ?
                                   WHERE id = ?`);
-  updateQuery.run([username, first_name, last_name, age, email, major, user_id], (err) => 
+    updateQuery.run([username, first_name, last_name, age, email, major, user_id], (err) => 
     {
       if (err) {
         console.error("error updating user:" + err);
