@@ -1,8 +1,3 @@
-//Gave a error: require is not defined
-//const filter = require("../../../node_modules/jade/lib/filters");
-//const { cache } = require("../../../node_modules/jade/lib/index");
-
-
 async function fetchUserInfo() {
     try {
         data = await fetch("/api/userdata", { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data })
