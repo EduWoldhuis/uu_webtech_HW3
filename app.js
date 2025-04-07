@@ -30,8 +30,9 @@ app.get("/", function (req, res) {
 });
 
 app.get("/getUsername", function (req, res){
-  const userid = parseInt(req.query.userid);
-    db.getUsername(userid).then((username) => {
+  const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+  let uid = decoded.id;
+    db.getUsername(uid).then((username) => {
         res.send(username)
     }).catch((error) => {
         console.error(error);
@@ -56,7 +57,7 @@ app.post("/api/changeInformation", async function (req, res){
     let major = req.body.major;
     let courses;
     if (req.body.courses == "") {
-        courses = [];
+      courses = [];
     } else {
         courses = req.body.courses.split(",");
     }
@@ -165,7 +166,7 @@ app.post("/api/login",
 
 app.get("/api/userdata",
   function (req, res) {
-  // We have to use promises because sqlite3 is built asyncronously.
+    // We have to use promises because sqlite3 is built asyncronously.
     try {
       // Check for authorization
       const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
@@ -265,6 +266,7 @@ app.get("/api/follows",
 
 app.post("/profile",
   function (req, res) {
+
     let username = req.body.username;
     let first_name = req.body.first_name;
     let last_name = req.body.last_name;
@@ -282,6 +284,7 @@ app.post("/profile",
     try {
       // Check for authorization
       const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+
       db.updateUserdata(decoded.id, username, first_name, last_name, age, email, major, courses, (err) => {
         if (err) {
           console.error("Error inserting:", err);
@@ -312,6 +315,7 @@ app.get("/chat",
         try {
             // Check for authorization
             const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+            
             res.sendFile(__dirname + "/chat.html")
         }
         catch (error) {

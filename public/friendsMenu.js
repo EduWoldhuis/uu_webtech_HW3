@@ -9,6 +9,7 @@ function toggleFriendsMenu(display) {
 
 async function fetchFriends() {
     const friends = await fetch("/api/allFriends", { method: 'GET' }).then(x => x.json()).then(x => { return x });
+    console.log(friends);
     const friendsSelector = document.getElementById("current-friends-selector");
     friends.forEach(friend => {
         const optionEl = document.createElement("option");

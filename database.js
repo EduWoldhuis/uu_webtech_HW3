@@ -122,7 +122,6 @@ function validateInput(username, first_name, last_name, major, email, age) {
   if (!/^[A-Za-z\s]+$/.test(major)) {
     return "Invalid major!";
   }
-  console.log(email);
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.toLowerCase())) {   //regex from https://stackoverflow.com/questions/46155/
     return "Invalid email!";
   };
@@ -167,6 +166,30 @@ function getFriends(user_id) {
             }
         });
     });
+}
+
+function getAllFriendData(user_id) {
+  console.log("called");
+  return new Promise((resolve, reject) => {
+      db.all(`SELECT *
+              FROM User
+              WHERE User.id
+              IN (  SELECT Friend.user_id_1
+                    FROM Friend
+                    WHERE Friend.user_id_2 = ?
+                  UNION
+                    SELECT Friend.user_id_2
+                    FROM Friend
+                    WHERE Friend.user_id_1 = ?)
+              ORDER BY User.id`, [user_id], (err, rows) => {
+          if (err) {
+            console.error("Database Error:", err.message);
+              reject(err);
+          } else {
+              resolve(rows);
+          }
+      });
+  });
 }
 
 function getPotentialFriends(user_id) {
@@ -313,5 +336,6 @@ module.exports = {
     getUserdata,
     updateUserData,
     closeDB,
-    getFriends
+    getFriends,
+    getAllFriendData
 }

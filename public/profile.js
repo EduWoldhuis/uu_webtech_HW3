@@ -17,10 +17,13 @@ async function fetchUserInfo() {
         submitButton = document.getElementsByClassName("change-button")[0];
         const coursesData = await fetch("/api/courses", { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data });
         const userCoursesData = await fetch("/api/follows", { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data });
+
         const filterdCoursesData = [];
 
         for (let i = 0; i < coursesData.length; i++) {
             if ((userCoursesData.map(x => x.name)).includes(coursesData.map((x => x.name))[i])) {
+                console.log("added");
+
                 filterdCoursesData.push(coursesData.map((x => x.name))[i]);
             }
         }
