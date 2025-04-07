@@ -7,6 +7,7 @@
     <script src="navigation.js"></script>
     <script src="chat.js"></script>
     <script src="profile.js"></script>
+    <script src="friendsMenu.js"></script>
 </head>
 <body>
     <header>
@@ -19,9 +20,9 @@
             <button id="profile-button">
                 <img class="icon" src="images/profile-blank.png">
             </button>
-            <a>
-                <img class="icon" src="images/home-icon.png" >
-            </a>
+            <button id="friends-menu-button">
+                <img class="icon" src="images/profile-blank.png">
+            </button>
         </div>
     </header>
 
@@ -59,4 +60,33 @@
             <button type="submit" id="change-button">Change</button>
         </form>
     </section>
+
+    <section id="friends-menu-container">
+        <h3>Friends</h3>
+        <div id="current-friends">
+            <select id="current-friends-selector">
+
+            </select>
+            <p class="title">Username</p>
+            <p id="friend_username"></p>
+            <p class="title">First Name</p>
+            <p id="friend_first_name"></p>
+            <p class="title">Last Name</p>
+            <p id="friend_last_name"></p>
+            <p class="title">Major</p>
+            <p id="friend_major"></p>
+            <p class="title">Email</p>
+            <p id="friend_email"></p>
+            <p class="title">Age</p>
+            <p id="friend_age"></p>
+            <p class="title">Courses</p>
+            <p id="friend_courses"></p>
+        </div>
+            
+        <div id="potential-friends">
+
+
+        </div>
+    </section>
+
 </body>
