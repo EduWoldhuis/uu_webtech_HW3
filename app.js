@@ -7,16 +7,22 @@ var bodyParser = require("body-parser");
 var sqlite3 = require('sqlite3').verbose();
 var jwt = require("jsonwebtoken");
 var cookieParser = require("cookie-parser");
+var morgan = require("morgan");
+var path = require("path");
 
 var db = require("./database");
 const { userInfo } = require('os');
 
 const app = express();
 
+const date = new Date().toLocaleDateString();
+const logStream = fs.createWriteStream(path.join(__dirname, "logs", date), { flags: 'a' });
+
 app.use(
-  bodyParser.urlencoded({extended: true}),
-  express.static(__dirname + '/public'),
-  cookieParser()
+    bodyParser.urlencoded({extended: true}),
+    express.static(__dirname + '/public'),
+    cookieParser(),
+    morgan('combined', {stream: logStream})
 );
 
 app.get("/", function (req, res) {

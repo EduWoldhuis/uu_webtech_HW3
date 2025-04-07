@@ -1,0 +1,12 @@
+127.0.0.1 - - [07/Apr/2025:14:16:47 +0000] "GET / HTTP/1.1" 304 - "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+127.0.0.1 - - [07/Apr/2025:14:16:47 +0000] "GET / HTTP/1.1" 304 - "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+127.0.0.1 - - [07/Apr/2025:14:16:48 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://127.0.0.1:8080/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+127.0.0.1 - - [07/Apr/2025:14:17:06 +0000] "GET /login HTTP/1.1" 304 - "http://127.0.0.1:8080/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+127.0.0.1 - - [07/Apr/2025:14:17:12 +0000] "POST /api/login HTTP/1.1" 302 35 "http://127.0.0.1:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+127.0.0.1 - - [07/Apr/2025:14:17:12 +0000] "GET /login HTTP/1.1" 304 - "http://127.0.0.1:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+127.0.0.1 - - [07/Apr/2025:14:17:19 +0000] "POST /api/login HTTP/1.1" 302 35 "http://127.0.0.1:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+127.0.0.1 - - [07/Apr/2025:14:17:19 +0000] "GET /login HTTP/1.1" 304 - "http://127.0.0.1:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+127.0.0.1 - - [07/Apr/2025:14:17:24 +0000] "POST /api/login HTTP/1.1" 302 35 "http://127.0.0.1:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+127.0.0.1 - - [07/Apr/2025:14:17:24 +0000] "GET /login HTTP/1.1" 304 - "http://127.0.0.1:8080/login" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+[0mPOST /api/login [36m302[0m 8.419 ms - 35[0m
+[0mGET /login [36m304[0m 2.190 ms - -[0m
