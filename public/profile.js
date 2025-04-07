@@ -80,12 +80,14 @@ function createSelection(options, filteredList) {
 
     const selectButton = document.createElement("button");
     selectButton.textContent += "Add";
-    selectButton.addEventListener("click", function () {
-        console.log(filteredList + " : " + select.value);
+    selectButton.addEventListener("click", function (event) {
+        event.preventDefault();
         if (!filteredList.includes(select.value)) {
             selectContainer.appendChild(createTag(select.value))
         }
     });
+
+
     selectContainer.appendChild(selectButton);
     return selectContainer;
 }
@@ -111,7 +113,7 @@ function onDomLoaded() {
                 coursesInput.value += ",";
             }
         }
-    });
+    }, true);
 }
 
 document.addEventListener("DOMContentLoaded", onDomLoaded);
