@@ -157,6 +157,18 @@ function getMessage(since) {
   });
 }
 
+function getFriends(user_id) {
+    return new Promise((resolve, reject) => {
+        db.all(`SELECT username FROM Friend f  WHERE user_id_1 = ? S JOIN User u  ON f.user_id_2 = user.id`, [user_id], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}
+
 function getPotentialFriends(user_id) {
   // promises will handle the async stuff
   return new Promise((resolve, reject) => {
@@ -289,16 +301,17 @@ function closeDB() {
 
 
 module.exports = {
-  createUser,
-  createMessage,
-  getMessage,
-  getCourses,
-  getUserdata,
-  getUserCourses,
-  getUsername,
-  getPotentialFriends,
-  authorizeUser,
-  getUserdata,
-  updateUserData,
-  closeDB
+    createUser,
+    createMessage,
+    getMessage,
+    getCourses,
+    getUserdata,
+    getUserCourses,
+    getUsername,
+    getPotentialFriends,
+    authorizeUser,
+    getUserdata,
+    updateUserData,
+    closeDB,
+    getFriends
 }

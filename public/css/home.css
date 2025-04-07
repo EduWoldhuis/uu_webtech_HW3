@@ -163,6 +163,10 @@ form {
     margin: 5px;
 }
 
+select{
+    width: 20px;
+}
+
 #course-container *{
     
     font-size: 15px;
