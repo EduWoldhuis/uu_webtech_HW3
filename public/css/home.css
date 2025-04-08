@@ -164,7 +164,7 @@ form {
 }
 
 select{
-    width: 20px;
+    width: 150px;
 }
 
 #course-container *{
@@ -173,7 +173,7 @@ select{
 }
 
 #courses{
-    display: none;
+    visibility: hidden;
 }
 
 h2{

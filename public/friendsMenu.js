@@ -84,15 +84,3 @@ function createFriend(friend) {
             friendSection.appendChild(friendInfoContainer);
         friendMenuContainer.appendChild(friendSection);
 }
-
-// {
-//     "id": 1,
-//     "username": "test",
-//     "password": "test",
-//     "first_name": "test",
-//     "last_name": "test",
-//     "age": 0,
-//     "email": "test",
-//     "major": "test",
-//     "created_at": "2025-03-26 15:23:01"
-// }

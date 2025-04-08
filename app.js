@@ -9,18 +9,20 @@ var jwt = require("jsonwebtoken");
 var cookieParser = require("cookie-parser");
 var morgan = require("morgan");
 var path = require("path");
+var fileUpload = require("express-fileupload");
 
 var db = require("./database");
 const { userInfo } = require('os');
 
 const app = express();
 
-const date = new Date().toLocaleDateString();
+const date = new Date().toLocaleDateString("nl-NL");
 const logStream = fs.createWriteStream(path.join(__dirname, "logs", date), { flags: 'a' });
 
 app.use(
     bodyParser.urlencoded({extended: true}),
     express.static(__dirname + '/public'),
+    fileUpload(),
     cookieParser(),
     morgan('combined', {stream: logStream})
 );
@@ -61,6 +63,7 @@ app.post("/api/changeInformation", async function (req, res){
     } else {
         courses = req.body.courses.split(",");
     }
+    console.log("COURSES: " + courses);
 
     const updateUserDataDone = db.updateUserData(user_id, username, first_name, last_name, age, email, major, courses, console.log);
     if (updateUserDataDone !== true) {
@@ -81,9 +84,10 @@ app.post("/api/register",
     let major = req.body.major;
     let email = req.body.email;
     let age = req.body.age;
+    let image = req.files.user_image
 
 
-    db.createUser(username, password, first_name, last_name, major, email, age, (err) => {
+    db.createUser(username, password, first_name, last_name, major, email, age, image, (err) => {
       if (err) {
         console.log(err);
         res.status(500).send("Failed to create user: " + err);

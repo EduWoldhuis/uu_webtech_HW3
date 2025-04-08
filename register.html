@@ -9,7 +9,8 @@
 <body>
     <section>
         <h1>WEBTECH</h1>
-        <form id="registerForm">
+        <!--the enctype is necessary because of the fileupload.-->
+        <form id="registerForm" method="POST" enctype="multipart/form-data">
             <input type="text" name="username" required placeholder="Username"> 
             <input type="password" name="password" required placeholder="Password">
             <input type="text" name="first_name" required placeholder="First name"> 
@@ -17,6 +18,7 @@
             <input type="text" name="major" required placeholder="Computer science">
             <input type="text" name="email" required placeholder="student@uu.nl"> 
             <input type="number" name="age" required placeholder="Age">
+            <input type="file" name="user_image" accept="image/*" required>
             <button type="submit" class="register-button">Register</button>
             <a href="/login">Log in</a>
         </form>
