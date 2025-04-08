@@ -1,5 +1,15 @@
 document.addEventListener("DOMContentLoaded", registerFunction);
-function registerFunction() {
+async function registerFunction() {
+      
+    majorMenu = document.getElementById("major");
+    majors = await fetch("/api/majors", {method: 'GET', credentials: 'include'}).then(x => x.json()).then(data => {return data}); 
+    majors.forEach(major => {
+      selectElement = document.createElement("option");
+      selectElement.value = major.name;
+      selectElement.innerText = major.name;
+      majorMenu.appendChild(selectElement);
+    });
+
     document.getElementById("registerForm").addEventListener("submit", async function(e) {
         e.preventDefault();
         

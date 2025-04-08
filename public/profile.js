@@ -30,7 +30,17 @@ async function fetchUserInfo() {
             courseContainer.appendChild(courseTag);
         });
 
+
         document.getElementById("profile-form").insertBefore(courseContainer, document.getElementById("change-button"));
+        majorMenu = document.getElementById("major");
+        majors = await fetch("/api/majors", {method: 'GET', credentials: 'include'}).then(x => x.json()).then(data => {return data}); 
+        majors.forEach(major => {
+          selectElement = document.createElement("option");
+          selectElement.value = major.name;
+          selectElement.innerText = major.name;
+          majorMenu.appendChild(selectElement);
+        });
+        majorMenu.value = data.major;
         
     } catch(err) {
         console.log(err);
@@ -112,6 +122,7 @@ function onDomLoaded() {
         console.log("coursesInput:" + coursesInput.value);
         document.getElementById("profile-form").submit();
     }, true);
+
 }
 
 document.addEventListener("DOMContentLoaded", onDomLoaded);

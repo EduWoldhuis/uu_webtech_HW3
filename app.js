@@ -235,6 +235,16 @@ app.get("/api/allFriends", function (req, res) {
     db.getFriends(req.cookies.id).then(res.send(friends)).catch((error) => console.log(error));
 })
 
+app.get("/api/majors",
+  function (req, res) {
+      db.getMajors().then((majors) => {
+        res.send(majors)
+      }).catch((error) => {
+        console.error(error);
+      });
+  }
+);
+
 app.get("/api/courses",
   function (req, res) {
     try {
