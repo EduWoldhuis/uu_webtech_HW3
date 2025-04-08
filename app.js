@@ -15,7 +15,7 @@ const { userInfo } = require('os');
 
 const app = express();
 
-const date = new Date().toLocaleDateString();
+const date = new Date().toLocaleDateString("nl-NL");
 const logStream = fs.createWriteStream(path.join(__dirname, "logs", date), { flags: 'a' });
 
 app.use(
