@@ -96,13 +96,13 @@ db.serialize(() => {
     `, (err) => {if (err) {console.error('Error creating table Friend.')}});
 });
 
-function createUser(username, password, first_name, last_name, major, email, age, image, callback) {  
-  validate = validateInput(username, first_name, last_name, major, email, age, image)
+function createUser(username, password, first_name, last_name, major, email, hobbies, age, image, callback) {  
+  validate = validateInput(username, first_name, last_name, major, email, hobbies, age, image)
   if (validate === true) {
     // SHA512 to prevent easy bruteforcing
     var password = crypto.createHash('sha512').update(password).digest('hex');
-    const insertQuery = db.prepare("INSERT INTO User (username, password, first_name, last_name, age, email, major) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    insertQuery.run([username, password, first_name, last_name, age, email, major], (err) => {if (err) {callback("Username not unique.");}});
+    const insertQuery = db.prepare("INSERT INTO User (username, password, first_name, last_name, age, email, hobbies, major) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    insertQuery.run([username, password, first_name, last_name, age, email, hobbies, major], (err) => {if (err) {callback("Username not unique.");}});
     insertQuery.finalize();
     if (image.name.endsWith(".png")) {
       image.mv(path.join(__dirname, 'public', 'images', 'userimages', `${username}.png`));
@@ -117,12 +117,15 @@ function createUser(username, password, first_name, last_name, major, email, age
   }
 }
 
-function validateInput(username, first_name, last_name, major, email, age, image) {
+function validateInput(username, first_name, last_name, major, email, hobbies, age, image) {
   if (!(image.name.endsWith(".png") || image.name.endsWith(".jpg") || image.name.endsWith(".jpeg"))) {
     return "Invalid image type. We only accept PNG and JPG/JPEG.";
   }
   if (!/^[A-Za-z][A-Za-z0-9_]{2,9}$/.test(username)) {
     return "Invalid username! It should start with a letter and be 3-10 characters long.";
+  }
+  if (!/^[A-Za-z, ]+$/.test(hobbies)) {
+    return "Invalid hobbies. Only letters and ,";
   }
   if (!/^[A-Za-z]+$/.test(first_name)) {
     return "Invalid first name! It should only include letters.";

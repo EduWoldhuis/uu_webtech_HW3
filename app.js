@@ -84,10 +84,11 @@ app.post("/api/register",
     let major = req.body.major;
     let email = req.body.email;
     let age = req.body.age;
+    let hobbies = req.body.hobbies;
     let image = req.files.user_image
 
 
-    db.createUser(username, password, first_name, last_name, major, email, age, image, (err) => {
+    db.createUser(username, password, first_name, last_name, major, email, hobbies, age, image, (err) => {
       if (err) {
         console.log(err);
         res.status(500).send("Failed to create user: " + err);
