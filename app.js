@@ -9,6 +9,7 @@ var jwt = require("jsonwebtoken");
 var cookieParser = require("cookie-parser");
 var morgan = require("morgan");
 var path = require("path");
+var fileUpload = require("express-fileupload");
 
 var db = require("./database");
 const { userInfo } = require('os');
@@ -21,6 +22,7 @@ const logStream = fs.createWriteStream(path.join(__dirname, "logs", date), { fla
 app.use(
     bodyParser.urlencoded({extended: true}),
     express.static(__dirname + '/public'),
+    fileUpload(),
     cookieParser(),
     morgan('combined', {stream: logStream})
 );
@@ -30,8 +32,9 @@ app.get("/", function (req, res) {
 });
 
 app.get("/getUsername", function (req, res){
-  const userid = parseInt(req.query.userid);
-    db.getUsername(userid).then((username) => {
+  const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+  let uid = decoded.id;
+    db.getUsername(uid).then((username) => {
         res.send(username)
     }).catch((error) => {
         console.error(error);
@@ -56,7 +59,7 @@ app.post("/api/changeInformation", async function (req, res){
     let major = req.body.major;
     let courses;
     if (req.body.courses == "") {
-        courses = [];
+      courses = [];
     } else {
         courses = req.body.courses.split(",");
     }
@@ -81,9 +84,10 @@ app.post("/api/register",
     let major = req.body.major;
     let email = req.body.email;
     let age = req.body.age;
+    let image = req.files.user_image
 
 
-    db.createUser(username, password, first_name, last_name, major, email, age, (err) => {
+    db.createUser(username, password, first_name, last_name, major, email, age, image, (err) => {
       if (err) {
         console.log(err);
         res.status(500).send("Failed to create user: " + err);
@@ -176,7 +180,7 @@ app.post("/api/login",
 
 app.get("/api/userdata",
   function (req, res) {
-  // We have to use promises because sqlite3 is built asyncronously.
+    // We have to use promises because sqlite3 is built asyncronously.
     try {
       // Check for authorization
       const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
@@ -237,11 +241,6 @@ app.get("/api/potentialFriends",
   }
 );
 
-/*app.get("/api/allFriends", function (req, res) {
-    db.getFriends(req.cookies.id).then(friends => (res.send(friends)).catch((error) => console.log(error));
-})
-};*/
-
 app.get("/api/allFriends", function (req, res) {
     db.getAllFriendData(req.cookies.id).then((friends) => { res.send(friends) }).catch((error) => console.log(error));
 });
@@ -280,6 +279,7 @@ app.get("/api/follows",
 
 app.post("/profile",
   function (req, res) {
+
     let username = req.body.username;
     let first_name = req.body.first_name;
     let last_name = req.body.last_name;
@@ -297,6 +297,7 @@ app.post("/profile",
     try {
       // Check for authorization
       const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+
       db.updateUserdata(decoded.id, username, first_name, last_name, age, email, major, courses, (err) => {
         if (err) {
           console.error("Error inserting:", err);
@@ -327,6 +328,7 @@ app.get("/chat",
         try {
             // Check for authorization
             const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+            
             res.sendFile(__dirname + "/chat.html")
         }
         catch (error) {

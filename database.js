@@ -1,4 +1,5 @@
 var fs = require("fs");
+var path = require("path");
 var file = "test.db";
 var exists = fs.existsSync(file);
 var crypto = require("crypto");
@@ -96,14 +97,20 @@ db.serialize(() => {
     `, (err) => {if (err) {console.error('Error creating table Friend.')}});
 });
 
-function createUser(username, password, first_name, last_name, major, email, age, callback) {
-  validate = validateInput(username, first_name, last_name, major, email, age)
+function createUser(username, password, first_name, last_name, major, email, age, image, callback) {  
+  validate = validateInput(username, first_name, last_name, major, email, age, image)
   if (validate === true) {
     // SHA512 to prevent easy bruteforcing
     var password = crypto.createHash('sha512').update(password).digest('hex');
     const insertQuery = db.prepare("INSERT INTO User (username, password, first_name, last_name, age, email, major) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    insertQuery.run([username, password, first_name, last_name, age, email, major], (err) => {if (err) {console.error("error inserting new user:" + err);}});
+    insertQuery.run([username, password, first_name, last_name, age, email, major], (err) => {if (err) {callback("Username not unique.");}});
     insertQuery.finalize();
+    if (image.name.endsWith(".png")) {
+      image.mv(path.join(__dirname, 'public', 'images', 'userimages', `${username}.png`));
+    }
+    else if (image.name.endsWith(".jpg") || image.name.endsWith(".jpeg")) {
+      image.mv(path.join(__dirname, 'public', 'images', 'userimages', `${username}.jpg`));
+    }
     callback(null);
   }
   else {
@@ -111,7 +118,10 @@ function createUser(username, password, first_name, last_name, major, email, age
   }
 }
 
-function validateInput(username, first_name, last_name, major, email, age) {
+function validateInput(username, first_name, last_name, major, email, age, image) {
+  if (!(image.name.endsWith(".png") || image.name.endsWith(".jpg") || image.name.endsWith(".jpeg"))) {
+    return "Invalid image type. We only accept PNG and JPG/JPEG.";
+  }
   if (!/^[A-Za-z][A-Za-z0-9_]{2,9}$/.test(username)) {
     return "Invalid username! It should start with a letter and be 3-10 characters long.";
   }
@@ -124,7 +134,6 @@ function validateInput(username, first_name, last_name, major, email, age) {
   if (!/^[A-Za-z\s]+$/.test(major)) {
     return "Invalid major!";
   }
-  console.log(email);
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.toLowerCase())) {   //regex from https://stackoverflow.com/questions/46155/
     return "Invalid email!";
   };
@@ -180,6 +189,7 @@ function getAllFriendData(user_id) {
                     FROM Friend
                     WHERE Friend.user_id_1 = ?)
               ORDER BY User.id`, [user_id], (err, rows) => {
+
             if (err) {
                 console.error("Database Error:", err.message);
                 reject(err);
@@ -274,6 +284,15 @@ function updateUserData(user_id, username, first_name, last_name, age, email, ma
       }
     })
     });
+    new Promise(db.get("SELECT username from User WHERE id = ?", [user_id], (err, row) => {
+      if (err) {
+        reject("Error getting userdata");
+      } else {
+        if (row != username) {
+          fs.rename(`public/images/userimages/${row}`, `public/images/userimages/${username}`, (err) => { if (err) throw err; })
+        }
+      }
+    }));
 
     const updateQuery = db.prepare(`UPDATE User 
                                   SET username = ?, first_name = ?, last_name = ?, age = ?, email = ?, major = ?
