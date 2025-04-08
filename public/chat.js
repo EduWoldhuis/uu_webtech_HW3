@@ -20,10 +20,6 @@ async function fetchMessages() {
         const newMessages = await response.json();
         const container = document.getElementById("message-container");
         console.log("Newmessages: " + newMessages);
-        //Remove old
-        while (container.firstChild) {
-            container.removeChild(container.firstChild);
-        }
 
         newMessages.forEach(msg => {
             const messageContainerElement = document.createElement("div");
@@ -59,7 +55,9 @@ function toggleChat(displayChat) {
     const chat = document.getElementById("chat");
     if (displayChat) {
         chat.style.display = "flex";
-        toggleMessageLoop(true);
+        if (otherUsername != "" && otherUsername != null) {
+            toggleMessageLoop(true);
+        }
 
         const container = document.getElementById("message-container");
         container.scrollTop = container.scrollHeight;
@@ -71,12 +69,13 @@ function toggleChat(displayChat) {
 
 function toggleMessageLoop(receiveMessages) {
   // Immediately display the messages before starting the loop
-    fetchUsername().then(() => {fetchMessages();});
+    fetchUsername().then(() => {
     if (receiveMessages) {
         fetchMessagesInterval = setInterval(fetchMessages, 500);
     } else {
         clearInterval(fetchMessagesInterval);
     }
+    });
 }
 
 function clearChatbox() {
