@@ -166,14 +166,8 @@ function getMessage(since, currentUserId, otherUserId) {
 }
 
 function getAllFriendData(user_id) {
-<<<<<<< HEAD
-    console.log("called");
-    return new Promise((resolve, reject) => {
-        db.all(`SELECT *
-=======
   return new Promise((resolve, reject) => {
       db.all(`SELECT *
->>>>>>> 569721a83b9e9b092cc18318dc13d7ff858a4da4
               FROM User
               WHERE User.id
               IN (  SELECT Friend.user_id_1
