@@ -229,7 +229,7 @@ app.get("/api/potentialFriends",
 );
 
 app.get("/api/allFriends", function (req, res) {
-    db.getFriends(req.cookies.id).then(res.send(friends)).catch((error) => console.log(error));
+  db.getAllFriendData(req.cookies.id).then((friends) => {res.send(friends)}).catch((error) => console.log(error));
 })
 
 app.get("/api/courses",
