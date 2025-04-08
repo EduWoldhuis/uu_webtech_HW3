@@ -2,12 +2,11 @@ let fetchMessagesInterval;
 let lastMessageID = 0; 
 let username = "";
 let userid = "";
+let otherUsername;
 
 async function fetchUsername() {
-    userid = document.cookie.split(' ')[0].split('=')[1];
-    console.log("userid: " + userid);
     try {
-      const response = await fetch(`/getUsername?userid=${userid}`, { method: 'GET' });
+      const response = await fetch(`/getUsername`, { method: 'GET' });
       const data = await response.json();
       username = data[0].username;
     } catch (error) {
@@ -17,9 +16,15 @@ async function fetchUsername() {
 
 async function fetchMessages() {
     try {
-        const response = await fetch(`/api/message?since=${lastMessageID}`, { method: 'GET', credentials: 'include' })
+        const response = await fetch(`/api/message?since=${lastMessageID}&otherUsername=${otherUsername}`, { method: 'GET', credentials: 'include' })
         const newMessages = await response.json();
         const container = document.getElementById("message-container");
+        console.log("Newmessages: " + newMessages);
+        //Remove old
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
+
         newMessages.forEach(msg => {
             const messageContainerElement = document.createElement("div");
             const messageElement = document.createElement("p");
@@ -82,8 +87,33 @@ function clearChatbox() {
     }, 0);
 }
 
+async function fillFriendList() {
+    const selectMessageFriend = document.getElementById("message-friend-menu");
+    const friendsList = await fetch("/api/allFriends", { method: 'GET' }).then(x => x.json()).then(x => { return x });
+    console.log("friendllist: " + friendsList);
+    friendsList.forEach(friend => {
+        const optionEl = document.createElement("option");
+        optionEl.textContent += friend.username;
+            selectMessageFriend.appendChild(optionEl);
+    });
+    if (friendsList.length > 0) {
+        selectMessageFriend.value = friendsList[0].username;
+        otherUsername = friendsList[0].username;
+    }
+}
+
 function onDomLoaded() {
+    fillFriendList();
+    document.getElementById("change-chat-button").addEventListener("click", function () {
+        otherUsername = document.getElementById("message-friend-menu").value;
+    });
     document.getElementById("chat-box").querySelector("button").addEventListener("click", clearChatbox);
+    document.getElementById("chat-send-button").addEventListener("click", function(event) {
+        event.preventDefault();
+        document.getElementById("otherUsername").value = otherUsername;
+        document.getElementById("chat-box").submit();
+    })
+
 }
 
 document.addEventListener("DOMContentLoaded", onDomLoaded);

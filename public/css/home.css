@@ -172,6 +172,10 @@ select{
     font-size: 15px;
 }
 
+.invisible-data {
+    visibility: hidden;
+}
+
 #courses{
     visibility: hidden;
 }
@@ -179,6 +183,59 @@ select{
 h2{
     margin: 10px;
 }
+
+#friend {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 20px;
+    position: relative;
+    width: auto;
+    height: 300px;
+}
+
+#friend-picture-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: auto;
+    height: 100%;
+    padding: 5px;
+    border-style: solid;
+    border-width: 5px;
+}
+
+#friend-picture {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+}
+
+#friend-username {
+    margin: 0px;
+    font-size: 3rem;
+}
+
+#friend-info-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-style: solid;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    border-style: solid;
+    border-width: 5px;
+    padding: 5px 100px;
+}
+
+#friend-info-container p {
+    margin: 0px;
+    padding: 5px;
+    width: auto;
+    font-size: 2rem;
+}
+
 
 @media(max-width: 600px){
     header{

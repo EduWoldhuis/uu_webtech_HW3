@@ -28,16 +28,21 @@
 
     <section id="chat">
         <h1>Chat</h1>
+        <select id="message-friend-menu">
+
+        </select>
+        <button id="change-chat-button">Load chat</button>
         <div id="message-container">
 
         </div>
         <form id="chat-box" action="/api/message" method="POST" target="hiddenFrame">
             <input type="text" name="message" placeholder="message" required>
-            <button type="submit">Send</button>
+            <button id="chat-send-button" type="submit">Send</button>
+            <input class="invisible-data" id="otherUsername" type="text" name="otherUsername">
         </form>
     </section>
     
-    <iframe name="hiddenFrame" width="0" height="0" border="0" style="display: none"></iframe>
+    <iframe name="hiddenFrame" width="0" height="0" style="display: none"></iframe>
     <!-- Hidden iframe so the form doesn't redirect -->
     
     <section id="profile-container">
@@ -55,37 +60,13 @@
             <input id="email" type="text" name="email" required placeholder="student@uu.nl">
             <label for="age">Age</label>
             <input id="age" type="number" name="age" required>
-            <label id="courses_label">courses</label>
-            <button type="submit" id="change-button">Change</button>
+            <label id="courses_label">Courses</label>
             <input id="courses" type="text" name="courses"/>
+            <button type="submit" id="change-button">Change</button>
         </form>
     </section>
 
     <section id="friends-menu-container">
-        <h3>Friends</h3>
-        <div id="current-friends">
-            <select id="current-friends-selector">
-            </select>
-            <p class="title">Username</p>
-            <p id="friend_username"></p>
-            <p class="title">First Name</p>
-            <p id="friend_first_name"></p>
-            <p class="title">Last Name</p>
-            <p id="friend_last_name"></p>
-            <p class="title">Major</p>
-            <p id="friend_major"></p>
-            <p class="title">Email</p>
-            <p id="friend_email"></p>
-            <p class="title">Age</p>
-            <p id="friend_age"></p>
-            <p class="title">Courses</p>
-            <p id="friend_courses"></p>
-        </div>
-            
-        <div id="potential-friends">
-
-
-        </div>
     </section>
 
 </body>

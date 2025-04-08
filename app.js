@@ -32,8 +32,9 @@ app.get("/", function (req, res) {
 });
 
 app.get("/getUsername", function (req, res){
-  const userid = parseInt(req.query.userid);
-    db.getUsername(userid).then((username) => {
+  const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+  let uid = decoded.id;
+    db.getUsername(uid).then((username) => {
         res.send(username)
     }).catch((error) => {
         console.error(error);
@@ -58,7 +59,7 @@ app.post("/api/changeInformation", async function (req, res){
     let major = req.body.major;
     let courses;
     if (req.body.courses == "") {
-        courses = [];
+      courses = [];
     } else {
         courses = req.body.courses.split(",");
     }
@@ -98,24 +99,29 @@ app.post("/api/register",
 );
 
 app.post("/api/message",
-  function (req, res) {
-    let message = req.body.message;
-    try {
-      const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
-        let uid = decoded.id;
+    function (req, res) {
+        let message = req.body.message;
+        let otherUsername = req.body.otherUsername;
+        try {
+            //const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+            //let uid = decoded.id;
+            let uid = req.cookies.id;
 
-      db.createMessage(uid, message, (err) => {
-        if (err) {
-          console.error("Error inserting:", err.message);
-          res.status(500).send("Failed to create message: " + err.message);
-        } else {
-          res.status(200).send("Message created successfully: " + message);
-        }
-      });
+            db.getUserId(otherUsername).then(otherUser =>
+                db.createMessage(uid, otherUser[0].id, message, (err) => {
+                    if (err) {
+                        console.error("Error inserting:", err.message);
+                        res.status(500).send("Failed to create message: " + err.message);
+                    } else {
+                        res.status(200).send("Message created successfully: " + message);
+                    }
+                })
+            ).catch((error) => {
+                console.log(error);
+            });
     } catch (error) {
       res.status(401).send("Unauthorized.");      
     }
-
   }
 );
 
@@ -125,21 +131,32 @@ app.get("/",function (req, res) {
 
 
 app.get("/api/message",
-  function (req, res) {
+    function (req, res) {
   // We have to use promises because sqlite3 is built asyncronously.
-    const since = parseInt(req.query.since) || 0;
-    try {
-      // Check for authorization
-      const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
-      db.getMessage(since).then((messages) => {
-        res.send(messages)
-        }).catch((error) => {
-          console.error(error);
-      });
-    } catch (error) {
-      res.status(401).send("Unauthorized.");
+        const since = parseInt(req.query.since) || 0;
+        const otherUsername = req.query.otherUsername;
+        try {
+            // Check for authorization
+            const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+            db.getUserId(otherUsername).then(otherUser => {
+                if (otherUser.length == 0) {;
+                    throw new Error("no friend selected");
+                }
+                db.getMessage(since, req.cookies.id, otherUser).then((messages) => {
+                    res.send(messages)
+                }).catch((error) => {
+                    console.error(error);
+                    res.status(500);
+                })
+            }
+            ).catch((error) => {
+                console.log(error);
+                res.status(500);
+            });
+        } catch (error) {
+            res.status(401).send("Unauthorized.");
+        }
     }
-  }
 );
 
 app.post("/api/login",
@@ -169,7 +186,7 @@ app.post("/api/login",
 
 app.get("/api/userdata",
   function (req, res) {
-  // We have to use promises because sqlite3 is built asyncronously.
+    // We have to use promises because sqlite3 is built asyncronously.
     try {
       // Check for authorization
       const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
@@ -183,7 +200,6 @@ app.get("/api/userdata",
     }
   }
 );
-
 
 app.get("/courses", function (req, res) {
     db.getCourses().then(courses => {
@@ -232,8 +248,8 @@ app.get("/api/potentialFriends",
 );
 
 app.get("/api/allFriends", function (req, res) {
-    db.getFriends(req.cookies.id).then(res.send(friends)).catch((error) => console.log(error));
-})
+    db.getAllFriendData(req.cookies.id).then((friends) => { res.send(friends) }).catch((error) => console.log(error));
+});
 
 app.get("/api/majors",
   function (req, res) {
@@ -266,7 +282,13 @@ app.get("/api/follows",
     try {
       // Check for authorization
       const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
-      db.getUserCourses(decoded.id).then((courses) => {
+
+      if (req.query.id) {
+        uid = req.query.id;
+      } else {
+        uid = decoded.id;
+      }
+      db.getUserCourses(uid).then((courses) => {
         res.send(courses)
       }).catch((error) => {
         console.error(error);
@@ -279,6 +301,7 @@ app.get("/api/follows",
 
 app.post("/profile",
   function (req, res) {
+
     let username = req.body.username;
     let first_name = req.body.first_name;
     let last_name = req.body.last_name;
@@ -296,6 +319,7 @@ app.post("/profile",
     try {
       // Check for authorization
       const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+
       db.updateUserdata(decoded.id, username, first_name, last_name, age, email, major, courses, (err) => {
         if (err) {
           console.error("Error inserting:", err);
@@ -326,6 +350,7 @@ app.get("/chat",
         try {
             // Check for authorization
             const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+            
             res.sendFile(__dirname + "/chat.html")
         }
         catch (error) {
