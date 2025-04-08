@@ -18,10 +18,10 @@ async function fetchFriends() {
     buildFriends(friends);
 }
 
-function buildFriends(friends) {
+async function buildFriends(friends) {
 
     for (i = 0; i < friends.length; i++) {
-        createFriend(friends[i]);
+        await createFriend(friends[i]);
     }
     const friendMenuContainer = document.getElementById("friends-menu-container");
 
@@ -32,7 +32,7 @@ function buildFriends(friends) {
     }
 }
 
-function createFriend(friend) {
+async function createFriend(friend) {
     const friendMenuContainer = document.getElementById("friends-menu-container");
         const friendSection = document.createElement("section");
         friendSection.id = "friend";
@@ -40,7 +40,13 @@ function createFriend(friend) {
             friendPictureContainer.id = "friend-picture-container";
                 const friendPicture = document.createElement("img");
                 friendPicture.id = "friend-picture";
-                friendPicture.src = "https://cdn.britannica.com/26/162626-050-3534626F/Koala.jpg"; //TODO: get dynamically
+                friendPicture.src = `/images/userimages/${friend.username}.png`;
+                friendPicture.addEventListener('error', function () {
+                    this.src = `/images/userimages/${friend.username}.jpg`;
+                })
+                friendPicture.addEventListener('error', function () {
+                    this.src = `/images/notfound.png`;
+                })                
                 friendPictureContainer.appendChild(friendPicture);
 
                 const friendUsername = document.createElement("strong");
@@ -72,12 +78,21 @@ function createFriend(friend) {
 
                 const friendHobbies = document.createElement("p");
                 friendHobbies.id = "friend-hobbies";
-                friendHobbies.textContent = "Hobbies: " + "Piano, Boulderen, Games"; //TODO: get dynamically
+                friendHobbies.textContent = "Hobbies: " + friend.hobbies;
                 friendInfoContainer.appendChild(friendHobbies);
 
                 const friendCourses = document.createElement("p");
                 friendCourses.id = "friend-courses";
-                friendCourses.textContent = "Courses: " + "Webtech, Databases"; //TODO: get dynamically
+                const courses = await fetch(`/api/follows?id=${friend.id}`, { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data });
+                var courseString = "";
+                if (courses.length == 0) {
+                    courseString = "This user follows no courses.";
+                } else {
+                    courses.forEach(course => {courseString += course.course += ", "});
+                    courseString = courseString.slice(0,-2);
+                }
+
+                friendCourses.textContent = "Courses: " + courseString;
                 friendInfoContainer.appendChild(friendCourses);
 
             friendSection.appendChild(friendPictureContainer);

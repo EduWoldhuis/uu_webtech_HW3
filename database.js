@@ -19,18 +19,11 @@ db.serialize(() => {
           age INTEGER NOT NULL,
           email TEXT NOT NULL,
           major TEXT NOT NULL,
+          hobbies TEXT NOT NULL,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
     `, (err) => {if (err) {console.error('Error creating table User.')}}); 
 
-  db.run(`
-          CREATE TABLE IF NOT EXISTS Hobby (
-          user_id INTEGER NOT NULL,
-          hobby TEXT NOT NULL,
-          FOREIGN KEY (user_id) REFERENCES User(id)
-      );
-  `, (err) => { if (err) { console.error('Error creating table Hobby.' + err) } }); 
-  
   db.run(`
           CREATE TABLE IF NOT EXISTS Course (
           name TEXT NOT NULL,
@@ -38,7 +31,6 @@ db.serialize(() => {
           description TEXT NOT NULL
       );
   `, (err) => { if (err) { console.error('Error creating table Course.' + err) } }); 
-
 
   db.run(`
           CREATE TABLE IF NOT EXISTS Message (
@@ -167,7 +159,6 @@ function getMessage(since) {
 }
 
 function getAllFriendData(user_id) {
-  console.log("called");
   return new Promise((resolve, reject) => {
       db.all(`SELECT *
               FROM User

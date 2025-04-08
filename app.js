@@ -257,7 +257,13 @@ app.get("/api/follows",
     try {
       // Check for authorization
       const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
-      db.getUserCourses(decoded.id).then((courses) => {
+
+      if (req.query.id) {
+        uid = req.query.id;
+      } else {
+        uid = decoded.id;
+      }
+      db.getUserCourses(uid).then((courses) => {
         res.send(courses)
       }).catch((error) => {
         console.error(error);
