@@ -1,9 +1,9 @@
 function toggleFriendsMenu(display) {
     const friendMenuContainer = document.getElementById("friends-menu-container");
     if (display) {
-        friendMenuContainer.display = "none";
+        friendMenuContainer.style.display = "block";
     } else {
-        friendMenuContainer.display = "block";
+        friendMenuContainer.style.display = "none";
     }
 }
 
