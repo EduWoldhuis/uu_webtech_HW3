@@ -95,24 +95,29 @@ app.post("/api/register",
 );
 
 app.post("/api/message",
-  function (req, res) {
-    let message = req.body.message;
-    try {
-      const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
-        let uid = decoded.id;
+    function (req, res) {
+        let message = req.body.message;
+        let otherUsername = req.body.otherUsername;
+        try {
+            //const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+            //let uid = decoded.id;
+            let uid = req.cookies.id;
 
-      db.createMessage(uid, message, (err) => {
-        if (err) {
-          console.error("Error inserting:", err.message);
-          res.status(500).send("Failed to create message: " + err.message);
-        } else {
-          res.status(200).send("Message created successfully: " + message);
-        }
-      });
+            db.getUserId(otherUsername).then(otherUser =>
+                db.createMessage(uid, otherUser[0].id, message, (err) => {
+                    if (err) {
+                        console.error("Error inserting:", err.message);
+                        res.status(500).send("Failed to create message: " + err.message);
+                    } else {
+                        res.status(200).send("Message created successfully: " + message);
+                    }
+                })
+            ).catch((error) => {
+                console.log(error);
+            });
     } catch (error) {
       res.status(401).send("Unauthorized.");      
     }
-
   }
 );
 
@@ -122,21 +127,26 @@ app.get("/",function (req, res) {
 
 
 app.get("/api/message",
-  function (req, res) {
+    function (req, res) {
   // We have to use promises because sqlite3 is built asyncronously.
-    const since = parseInt(req.query.since) || 0;
-    try {
-      // Check for authorization
-      const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
-      db.getMessage(since).then((messages) => {
-        res.send(messages)
-        }).catch((error) => {
-          console.error(error);
-      });
-    } catch (error) {
-      res.status(401).send("Unauthorized.");
+        const since = parseInt(req.query.since) || 0;
+        const otherUsername = req.query.otherUsername;
+        try {
+            // Check for authorization
+            const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+            db.getUserId(otherUsername).then(otherUser =>  
+                db.getMessage(since, req.cookies.id, otherUser).then((messages) => {
+                    res.send(messages)
+                }).catch((error) => {
+                    console.error(error);
+                })
+            ).catch((error) => {
+                console.log(error);
+            });
+        } catch (error) {
+            res.status(401).send("Unauthorized.");
+        }
     }
-  }
 );
 
 app.post("/api/login",
@@ -180,7 +190,6 @@ app.get("/api/userdata",
     }
   }
 );
-
 
 app.get("/courses", function (req, res) {
     db.getCourses().then(courses => {
@@ -228,9 +237,14 @@ app.get("/api/potentialFriends",
   }
 );
 
-app.get("/api/allFriends", function (req, res) {
-    db.getFriends(req.cookies.id).then(res.send(friends)).catch((error) => console.log(error));
+/*app.get("/api/allFriends", function (req, res) {
+    db.getFriends(req.cookies.id).then(friends => (res.send(friends)).catch((error) => console.log(error));
 })
+};*/
+
+app.get("/api/allFriends", function (req, res) {
+    db.getAllFriendData(req.cookies.id).then((friends) => { res.send(friends) }).catch((error) => console.log(error));
+});
 
 app.get("/api/courses",
   function (req, res) {

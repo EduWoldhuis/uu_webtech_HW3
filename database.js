@@ -42,12 +42,14 @@ db.serialize(() => {
   db.run(`
           CREATE TABLE IF NOT EXISTS Message (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
-          user_id TEXT NOT NULL,
+          user_id_1 TEXT NOT NULL,
+          user_id_2 TEXT NOT NULL,
           message TEXT NOT NULL,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          FOREIGN KEY (user_id) REFERENCES User(id)
+          FOREIGN KEY (user_id_1) REFERENCES User(id),
+          FOREIGN KEY (user_id_2) REFERENCES User(id)
         );
-    `, (err) => {if (err) {console.error('Error creating table Message.')}});
+    `, (err) => {if (err) {console.error('Error creating table Message.' + err)}});
 
   db.run(`
           CREATE TABLE IF NOT EXISTS DirectMessage (
@@ -133,23 +135,30 @@ function validateInput(username, first_name, last_name, major, email, age) {
   return true;
 }
 
-function createMessage(user_id, message, callback) {
+function createMessage(currentUserId, otherUserId, message, callback) {
   // Todo: XSS validation
-  const insertQuery = db.prepare("INSERT INTO Message (user_id, message) VALUES (?, ?)");
-  insertQuery.run([user_id, message], (err) => {if (err) {return callback(err)}});
+    //console.log(currentUserId, otherUserId, "id" + otherUserId.id);
+  const insertQuery = db.prepare("INSERT INTO Message (user_id_1, user_id_2, message) VALUES (?, ?, ?)");
+  insertQuery.run([currentUserId, otherUserId, message], (err) => {if (err) {return callback(err)}});
   callback(null);
 }
 
-function getMessage(since) {
+function getMessage(since, currentUserId, otherUserId) {
   // promises will handle the async stuff
-  return new Promise((resolve, reject) => {
+    //console.log(otherUserId, otherUserId[0], "!", otherUserId[0].id, "!");
+    console.log(otherUserId[0].id, currentUserId);
+    let otherUserID = otherUserId[0].id;
+    return new Promise((resolve, reject) => {
     const query = `SELECT m.id, m.message, u.username 
                    FROM Message m 
-                   JOIN User u ON u.id = m.user_id
-                   WHERE m.id > ?`
-    db.all(query, [since], (err, rows) => {
+                   JOIN User u ON u.id = m.user_id_1
+                   WHERE (m.user_id_1 = ?
+                   AND m.user_id_2 = ? 
+                   OR m.user_id_1 = ?
+                   AND m.user_id_2 = ?)`
+    db.all(query, [currentUserId, otherUserID, otherUserID, currentUserId], (err, rows) => {
       if (err) {
-        reject("Error getting messages.");
+        reject("Error getting messages." + err);
       } else {
           resolve(rows);
       }
@@ -157,10 +166,22 @@ function getMessage(since) {
   });
 }
 
-function getFriends(user_id) {
+function getAllFriendData(user_id) {
+    console.log("called");
     return new Promise((resolve, reject) => {
-        db.all(`SELECT username FROM Friend f  WHERE user_id_1 = ? S JOIN User u  ON f.user_id_2 = user.id`, [user_id], (err, rows) => {
+        db.all(`SELECT *
+              FROM User
+              WHERE User.id
+              IN (  SELECT Friend.user_id_1
+                    FROM Friend
+                    WHERE Friend.user_id_2 = ?
+                  UNION
+                    SELECT Friend.user_id_2
+                    FROM Friend
+                    WHERE Friend.user_id_1 = ?)
+              ORDER BY User.id`, [user_id], (err, rows) => {
             if (err) {
+                console.error("Database Error:", err.message);
                 reject(err);
             } else {
                 resolve(rows);
@@ -168,6 +189,7 @@ function getFriends(user_id) {
         });
     });
 }
+
 
 function getPotentialFriends(user_id) {
   // promises will handle the async stuff
@@ -294,6 +316,19 @@ function getUsername(user_id) {
     });
 }
 
+function getUserId(Username) {
+    return new Promise((resolve, reject) => {
+        db.all("SELECT * FROM User WHERE Username = ?", [Username], (err, rows) => {
+            if (err) {
+                reject("Error getting username");
+            } else {
+                resolve(rows);
+            }
+        })
+    });
+}
+
+
 function closeDB() {
   db.close();
 }
@@ -313,5 +348,6 @@ module.exports = {
     getUserdata,
     updateUserData,
     closeDB,
-    getFriends
+    getUserId,
+    getAllFriendData
 }

@@ -28,12 +28,17 @@
 
     <section id="chat">
         <h1>Chat</h1>
+        <select id="message-friend-menu">
+
+        </select>
+        <button id="change-chat-button">Load chat</button>
         <div id="message-container">
 
         </div>
         <form id="chat-box" action="/api/message" method="POST" target="hiddenFrame">
             <input type="text" name="message" placeholder="message" required>
-            <button type="submit">Send</button>
+            <button id="chat-send-button" type="submit">Send</button>
+            <input class="invisible-data" id="otherUsername" type="text" name="otherUsername">
         </form>
     </section>
     

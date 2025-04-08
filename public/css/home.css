@@ -172,6 +172,10 @@ select{
     font-size: 15px;
 }
 
+.invisible-data {
+    visibility: hidden;
+}
+
 #courses{
     visibility: hidden;
 }

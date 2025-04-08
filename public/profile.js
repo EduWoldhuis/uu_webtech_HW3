@@ -23,8 +23,6 @@ async function fetchUserInfo() {
         const courseContainer = createSelection(coursesData);
         courseContainer.id = "course-container";
 
-        console.log(userCoursesData);
-
         userCoursesData.forEach(courseData => {
             const courseTag = createTag(courseData.course);
             courseContainer.appendChild(courseTag);
@@ -75,7 +73,6 @@ function createSelection(options) {
     selectButton.textContent += "Add";
     selectButton.addEventListener("click", function (event) {
         event.preventDefault();
-        console.log(getSelectedCourses());
         if (!getSelectedCourses().includes(select.value)) {
             selectContainer.appendChild(createTag(select.value))
         }
@@ -108,8 +105,6 @@ function onDomLoaded() {
                 coursesInput.value += ",";
             }
         }
-        console.log("AllCourses: " + allCourses);
-        console.log("coursesInput:" + coursesInput.value);
         document.getElementById("profile-form").submit();
     }, true);
 }
