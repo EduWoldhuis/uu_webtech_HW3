@@ -154,8 +154,6 @@ function createMessage(currentUserId, otherUserId, message, callback) {
 
 function getMessage(since, currentUserId, otherUserId) {
   // promises will handle the async stuff
-    //console.log(otherUserId, otherUserId[0], "!", otherUserId[0].id, "!");
-    console.log(otherUserId[0].id, currentUserId);
     let otherUserID = otherUserId[0].id;
     return new Promise((resolve, reject) => {
     const query = `SELECT m.id, m.message, u.username 
@@ -188,7 +186,7 @@ function getAllFriendData(user_id) {
                     SELECT Friend.user_id_2
                     FROM Friend
                     WHERE Friend.user_id_1 = ?)
-              ORDER BY User.id`, [user_id], (err, rows) => {
+              ORDER BY User.id`, [user_id, user_id], (err, rows) => {
 
             if (err) {
                 console.error("Database Error:", err.message);

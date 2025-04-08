@@ -20,6 +20,11 @@ async function fetchMessages() {
         const newMessages = await response.json();
         const container = document.getElementById("message-container");
         console.log("Newmessages: " + newMessages);
+        //Remove old
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
+
         newMessages.forEach(msg => {
             const messageContainerElement = document.createElement("div");
             const messageElement = document.createElement("p");
@@ -85,18 +90,21 @@ function clearChatbox() {
 async function fillFriendList() {
     const selectMessageFriend = document.getElementById("message-friend-menu");
     const friendsList = await fetch("/api/allFriends", { method: 'GET' }).then(x => x.json()).then(x => { return x });
+    console.log("friendllist: " + friendsList);
     friendsList.forEach(friend => {
         const optionEl = document.createElement("option");
         optionEl.textContent += friend.username;
             selectMessageFriend.appendChild(optionEl);
     });
-    selectMessageFriend.value = friendsList[0].username;
-    otherUsername = friendsList[0].username;
+    if (friendsList.length > 0) {
+        selectMessageFriend.value = friendsList[0].username;
+        otherUsername = friendsList[0].username;
+    }
 }
 
 function onDomLoaded() {
     fillFriendList();
-    document.getElementById("change-chat-button").addEventListener("click", function (){
+    document.getElementById("change-chat-button").addEventListener("click", function () {
         otherUsername = document.getElementById("message-friend-menu").value;
     });
     document.getElementById("chat-box").querySelector("button").addEventListener("click", clearChatbox);

@@ -138,14 +138,20 @@ app.get("/api/message",
         try {
             // Check for authorization
             const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
-            db.getUserId(otherUsername).then(otherUser =>  
+            db.getUserId(otherUsername).then(otherUser => {
+                if (otherUser.length == 0) {;
+                    throw new Error("no friend selected");
+                }
                 db.getMessage(since, req.cookies.id, otherUser).then((messages) => {
                     res.send(messages)
                 }).catch((error) => {
                     console.error(error);
+                    res.status(500);
                 })
+            }
             ).catch((error) => {
                 console.log(error);
+                res.status(500);
             });
         } catch (error) {
             res.status(401).send("Unauthorized.");
