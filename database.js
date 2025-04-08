@@ -33,6 +33,13 @@ db.serialize(() => {
   `, (err) => { if (err) { console.error('Error creating table Course.' + err) } }); 
 
   db.run(`
+          CREATE TABLE IF NOT EXISTS Major (
+          name TEXT NOT NULL PRIMARY KEY,
+          description TEXT NOT NULL
+      );
+  `, (err) => { if (err) { console.error('Error creating table Major.' + err) } }); 
+
+  db.run(`
           CREATE TABLE IF NOT EXISTS Message (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           user_id_1 TEXT NOT NULL,
@@ -293,6 +300,7 @@ function updateUserData(user_id, username, first_name, last_name, age, email, ma
       } else {
         if (row != username) {
           fs.rename(`public/images/userimages/${row}`, `public/images/userimages/${username}`, (err) => { if (err) throw err; })
+          resolve("changed file.");
         }
       }
     }));
