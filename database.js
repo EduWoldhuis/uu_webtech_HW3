@@ -97,7 +97,10 @@ db.serialize(() => {
 });
 
 function createUser(username, password, first_name, last_name, major, email, age, image, callback) {  
-  validate = validateInput(username, first_name, last_name, major, email, age, image)
+  validate = validateInput(username, first_name, last_name, major, email, age)
+  if (!(image.name.endsWith(".png") || image.name.endsWith(".jpg"))) {
+    return "Invalid image type. We only accept PNG and JPG";
+  }
   if (validate === true) {
     // SHA512 to prevent easy bruteforcing
     var password = crypto.createHash('sha512').update(password).digest('hex');
@@ -117,10 +120,7 @@ function createUser(username, password, first_name, last_name, major, email, age
   }
 }
 
-function validateInput(username, first_name, last_name, major, email, age, image) {
-  if (!(image.name.endsWith(".png") || image.name.endsWith(".jpg") || image.name.endsWith(".jpeg"))) {
-    return "Invalid image type. We only accept PNG and JPG/JPEG.";
-  }
+function validateInput(username, first_name, last_name, major, email, age) {
   if (!/^[A-Za-z][A-Za-z0-9_]{2,9}$/.test(username)) {
     return "Invalid username! It should start with a letter and be 3-10 characters long.";
   }
@@ -202,7 +202,7 @@ function getPotentialFriends(user_id) {
   // promises will handle the async stuff
   return new Promise((resolve, reject) => {
     // Select all users that aren't the original user and courses that follow the same course as the input user.
-    db.all(`SELECT ff.user_id, ff.course, u.first_name, u.last_name 
+    db.all(`SELECT u.username, ff.user_id, ff.course, u.first_name, u.last_name 
             FROM Follows fu JOIN Follows ff JOIN User u 
             ON fu.user_id = ? AND ff.course = fu.course AND ff.user_id != ? AND ff.user_id = u.id
             ORDER BY ff.course`, [user_id, user_id], (err, rows) => {
@@ -271,6 +271,7 @@ function updateUserData(user_id, username, first_name, last_name, age, email, ma
     let inputValidation = validateInput(username, first_name, last_name, major, email, age);
 
     if (inputValidation !== true) {
+      console.log("validation failed");
         return inputValidation;
     }
 
@@ -322,7 +323,6 @@ function updateUserData(user_id, username, first_name, last_name, age, email, ma
 function authorizeUser(username, password) {
   // promises will handle the async stuff
   var password = crypto.createHash('sha512').update(password).digest('hex');
-  console.log("username:" + username + "Password:" + password)
   return new Promise((resolve, reject) => {
     db.all("SELECT * FROM User WHERE username = ? AND password = ?", [username, password], (err, rows) => {
       if (err) {
