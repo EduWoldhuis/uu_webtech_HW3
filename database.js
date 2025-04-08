@@ -25,8 +25,26 @@ db.serialize(() => {
     `, (err) => {if (err) {console.error('Error creating table User.')}}); 
 
   db.run(`
+<<<<<<< HEAD
+          CREATE TABLE IF NOT EXISTS Hobby (
+          user_id INTEGER NOT NULL,
+          hobby TEXT NOT NULL,
+          FOREIGN KEY (user_id) REFERENCES User(id)
+      );
+  `, (err) => { if (err) { console.error('Error creating table Hobby.' + err) } }); 
+  
+  db.run(`
+          CREATE TABLE IF NOT EXISTS Major (
+          name TEXT NOT NULL PRIMARY KEY,
+          description TEXT NOT NULL
+      );
+  `, (err) => { if (err) { console.error('Error creating table Major.' + err) } }); 
+
+  db.run(`
+=======
+>>>>>>> refs/remotes/origin/master
           CREATE TABLE IF NOT EXISTS Course (
-          name TEXT NOT NULL,
+          name TEXT NOT NULL PRIMARY KEY,
           professor TEXT NOT NULL,
           description TEXT NOT NULL
       );
@@ -208,6 +226,19 @@ function getPotentialFriends(user_id) {
   });
 }
 
+function getMajors() {
+  // promises will handle the async stuff
+  return new Promise((resolve, reject) => {
+    db.all("SELECT * from Major", (err, rows) => {
+      if (err) {
+        reject("Error getting Majors data.");
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
 function getCourses() {
   // promises will handle the async stuff
   return new Promise((resolve, reject) => {
@@ -348,6 +379,7 @@ module.exports = {
     createUser,
     createMessage,
     getMessage,
+    getMajors,
     getCourses,
     getUserdata,
     getUserCourses,
