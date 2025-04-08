@@ -4,13 +4,11 @@ function registerFunction() {
         e.preventDefault();
         
         const formData = new FormData(this);
-        const queryString = new URLSearchParams(formData).toString()
 
         try {
             const response = await fetch("/api/register", {
               method: "POST",
-              headers: {"Content-Type": "application/x-www-form-urlencoded"},
-              body: queryString,
+              body: formData,
             });
             if (response.redirected) {
                 window.location.href = response.url;

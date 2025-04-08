@@ -8,7 +8,8 @@
 <body>
     <section>
         <h1>WEBTECH</h1>
-        <form action="/api/login" method="post">
+        <!--the enctype is necessary because of the fileupload.-->
+        <form action="/api/login" method="post" enctype="multipart/form-data">
             <input type="text" name="username" required placeholder="Username">
             <input type="password" name="password" required placeholder="Password">
             <button type="submit" class="login-button">Log in</button>
