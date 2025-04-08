@@ -141,7 +141,7 @@ app.get("/api/message",
             const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
             db.getUserId(otherUsername).then(otherUser => {
                 if (otherUser.length == 0) {;
-                    throw new Error("no friend selected");
+                    console.log("no friend selected");
                 }
                 db.getMessage(since, req.cookies.id, otherUser).then((messages) => {
                     res.send(messages)
