@@ -60,6 +60,7 @@ app.post("/api/changeInformation", async function (req, res){
     } else {
         courses = req.body.courses.split(",");
     }
+    console.log("COURSES: " + courses);
 
     const updateUserDataDone = db.updateUserData(user_id, username, first_name, last_name, age, email, major, courses, console.log);
     if (updateUserDataDone !== true) {

@@ -12,13 +12,6 @@ async function fetchUserInfo() {
         submitButton = document.getElementsByClassName("change-button")[0];
         const coursesData = await fetch("/api/courses", { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data });
         const userCoursesData = await fetch("/api/follows", { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data });
-        const filterdCoursesData = [];
-
-        for (let i = 0; i < coursesData.length; i++) {
-            if ((userCoursesData.map(x => x.name)).includes(coursesData.map((x => x.name))[i])) {
-                filterdCoursesData.push(coursesData.map((x => x.name))[i]);
-            }
-        }
 
         //Remove old selector menu
         const lastCourseContainer = document.getElementById("course-container");
@@ -27,13 +20,13 @@ async function fetchUserInfo() {
         }
 
         //Insert a selector to where you can choose courses and add the courses that are followd
-        const courseContainer = createSelection(coursesData, filterdCoursesData);
+        const courseContainer = createSelection(coursesData);
         courseContainer.id = "course-container";
 
+        console.log(userCoursesData);
+
         userCoursesData.forEach(courseData => {
-            console.log(courseData);
-            const courseTag = createTag(courseData.name);
-            courseTag.classList.add("course-tag");
+            const courseTag = createTag(courseData.course);
             courseContainer.appendChild(courseTag);
         });
 
@@ -42,6 +35,11 @@ async function fetchUserInfo() {
     } catch(err) {
         console.log(err);
     }
+}
+
+function getSelectedCourses() {
+    const selectedCourses = Array.from(document.querySelectorAll(".course-tag")).map(x => x.children[0].textContent);
+    return Array.from(selectedCourses);
 }
 
 function createTag(title) {
@@ -57,12 +55,12 @@ function createTag(title) {
 
     tag.appendChild(tagTitle);
     tag.appendChild(removeButton);
-
+    tag.classList.add("course-tag");
     return tag;
 }
 
 //Create a selection menu ONLY FOR AN ARRAY WITH ELEMENTS WITH A NAME VALUE
-function createSelection(options, filteredList) {
+function createSelection(options) {
     const selectContainer = document.createElement("div");
     const select = document.createElement("select");
     options.forEach(option => {
@@ -77,7 +75,8 @@ function createSelection(options, filteredList) {
     selectButton.textContent += "Add";
     selectButton.addEventListener("click", function (event) {
         event.preventDefault();
-        if (!filteredList.includes(select.value)) {
+        console.log(getSelectedCourses());
+        if (!getSelectedCourses().includes(select.value)) {
             selectContainer.appendChild(createTag(select.value))
         }
     });
@@ -99,15 +98,19 @@ function toggleProfile(displayProfile){
 }
 
 function onDomLoaded() {
-    document.getElementById("change-button").addEventListener("click", function () {
-        const allCourseTags = document.querySelectorAll(".course-tag")
+    document.getElementById("change-button").addEventListener("click", function (event) {
+        event.preventDefault();
+        const allCourses = getSelectedCourses();
         const coursesInput = document.getElementById("courses");
-        for (let i = 0; i < allCourseTags.length; i++) {
-            coursesInput.value += allCourseTags[i].children[0].textContent;
-            if (i != allCourseTags.length - 1) {
+        for (let i = 0; i < allCourses.length; i++) {
+            coursesInput.value += allCourses[i];
+            if (i != allCourses.length - 1) {
                 coursesInput.value += ",";
             }
         }
+        console.log("AllCourses: " + allCourses);
+        console.log("coursesInput:" + coursesInput.value);
+        document.getElementById("profile-form").submit();
     }, true);
 }
 
