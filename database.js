@@ -209,14 +209,25 @@ function getPotentialFriends(user_id) {
   // promises will handle the async stuff
   return new Promise((resolve, reject) => {
     // Select all users that aren't the original user and courses that follow the same course as the input user.
-    db.all(`SELECT u.username, ff.user_id, ff.course, u.first_name, u.last_name 
-            FROM Follows fu JOIN Follows ff JOIN User u 
-            ON fu.user_id = ? AND ff.course = fu.course AND ff.user_id != ? AND ff.user_id = u.id
-            ORDER BY ff.course`, [user_id, user_id], (err, rows) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(rows);
+    db.all(`SELECT DISTINCT u.username, ff.user_id, ff.course, u.first_name, u.last_name 
+            FROM Follows fu 
+            JOIN Follows ff 
+                ON ff.course = fu.course AND ff.user_id != fu.user_id
+            JOIN User u 
+                ON ff.user_id = u.id
+            WHERE fu.user_id = ?
+            AND NOT EXISTS (
+              SELECT *
+              FROM Friend f
+              WHERE (f.user_id_1 = fu.user_id AND f.user_id_2 = ff.user_id)
+              OR (f.user_id_1 = ff.user_id AND f.user_id_2 = fu.user_id)
+            )
+            ORDER BY ff.course;
+            `, [user_id], (err, rows) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(rows);
       }
     });
   });
@@ -375,6 +386,77 @@ function getUserId(Username) {
         })
     });
 }
+function getFriendRequests(user_id) {
+  // promises will handle the async stuff
+  return new Promise((resolve, reject) => {
+    // Select all users that aren't the original user and courses that follow the same course as the input user.
+    db.all(`SELECT user_id_sender 
+            FROM FriendRequest
+            WHERE user_id_reciever = ?`, [user_id], (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
+function getOutgoingFriendRequests(user_id) {
+  // promises will handle the async stuff
+  return new Promise((resolve, reject) => {
+    // Select all users that aren't the original user and courses that follow the same course as the input user.
+    db.all(`SELECT user_id_reciever 
+            FROM FriendRequest
+            WHERE user_id_sender = ?`, [user_id], (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+}
+
+function createFriendRequest(user_id_sender, user_id_reciever, callback) {
+  const insertQuery = db.prepare("INSERT INTO FriendRequest (user_id_sender, user_id_reciever) VALUES (?, ?)");
+  insertQuery.run([user_id_sender, user_id_reciever], (err) => {
+      if (err) {
+          callback(err);
+      } else {
+          callback(null);
+      }
+  });
+  insertQuery.finalize();
+}
+
+function createNewFriend(userId1, userId2, callback) {
+  let deleting;
+  let inserting;
+  //Remove friendrequest 
+  db.run("DELETE FROM FriendRequest WHERE user_id_sender = ? AND user_id_reciever = ? OR user_id_sender = ? AND user_id_reciever = ?",
+  [userId1, userId2, userId2, userId1], (err) => {
+      if (err) {
+          console.log(err);
+          deleting = false;
+      } else {
+          deleting = true;
+      }
+  });
+
+  //add new friend
+  db.run("INSERT INTO Friend (user_id_1, user_id_2) VALUES (?, ?)", [userId1, userId2], (err) => {
+      if (err) {
+          console.log(err);
+          deleting = false;
+      } else {
+          deleting = true;
+      }
+  });
+
+  callback(deleting && inserting);
+}
+
 function closeDB() {
   db.close();
 }
@@ -395,5 +477,9 @@ module.exports = {
     updateUserData,
     closeDB,
     getUserId,
-    getAllFriendData
+    getAllFriendData,
+    getFriendRequests,
+    createFriendRequest,
+    getOutgoingFriendRequests,
+    createNewFriend
 }
