@@ -69,14 +69,14 @@ function toggleChat(displayChat) {
 
 function toggleMessageLoop(receiveMessages) {
   // Immediately display the messages before starting the loop
-    fetchUsername().then(() => {
     if (receiveMessages) {
+        fetchUsername().then(() => {fetchMessages();});
         fetchMessagesInterval = setInterval(fetchMessages, 500);
     } else {
         clearInterval(fetchMessagesInterval);
     }
-    });
-}
+};
+
 
 function clearChatbox() {
     setTimeout(() => {

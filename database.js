@@ -31,13 +31,7 @@ db.serialize(() => {
           FOREIGN KEY (user_id) REFERENCES User(id)
       );
   `, (err) => { if (err) { console.error('Error creating table Hobby.' + err) } }); 
-  
-  db.run(`
-          CREATE TABLE IF NOT EXISTS Major (
-          name TEXT NOT NULL PRIMARY KEY,
-          description TEXT NOT NULL
-      );
-  `, (err) => { if (err) { console.error('Error creating table Major.' + err) } }); 
+ 
 
   db.run(`
           CREATE TABLE IF NOT EXISTS Course (
@@ -46,6 +40,13 @@ db.serialize(() => {
           description TEXT NOT NULL
       );
   `, (err) => { if (err) { console.error('Error creating table Course.' + err) } }); 
+
+  db.run(`
+          CREATE TABLE IF NOT EXISTS Major (
+          name TEXT NOT NULL PRIMARY KEY,
+          description TEXT NOT NULL
+      );
+  `, (err) => { if (err) { console.error('Error creating table Major.' + err) } }); 
 
   db.run(`
           CREATE TABLE IF NOT EXISTS Message (
@@ -104,13 +105,16 @@ db.serialize(() => {
     `, (err) => {if (err) {console.error('Error creating table Friend.')}});
 });
 
-function createUser(username, password, first_name, last_name, major, email, age, image, callback) {  
-  validate = validateInput(username, first_name, last_name, major, email, age, image)
+function createUser(username, password, first_name, last_name, major, email, hobbies, age, image, callback) {  
+  validate = validateInput(username, first_name, last_name, major, email, hobbies, age, image)
+  if (!(image.name.endsWith(".png") || image.name.endsWith(".jpg"))) {
+    return "Invalid image type. We only accept PNG and JPG";
+  }
   if (validate === true) {
     // SHA512 to prevent easy bruteforcing
     var password = crypto.createHash('sha512').update(password).digest('hex');
-    const insertQuery = db.prepare("INSERT INTO User (username, password, first_name, last_name, age, email, major) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    insertQuery.run([username, password, first_name, last_name, age, email, major], (err) => {if (err) {callback("Username not unique.");}});
+    const insertQuery = db.prepare("INSERT INTO User (username, password, first_name, last_name, age, email, hobbies, major) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    insertQuery.run([username, password, first_name, last_name, age, email, hobbies, major], (err) => {if (err) {callback("Username not unique.");}});
     insertQuery.finalize();
     if (image.name.endsWith(".png")) {
       image.mv(path.join(__dirname, 'public', 'images', 'userimages', `${username}.png`));
@@ -125,12 +129,18 @@ function createUser(username, password, first_name, last_name, major, email, age
   }
 }
 
-function validateInput(username, first_name, last_name, major, email, age, image) {
-  if (!(image.name.endsWith(".png") || image.name.endsWith(".jpg") || image.name.endsWith(".jpeg"))) {
-    return "Invalid image type. We only accept PNG and JPG/JPEG.";
+function validateInput(username, first_name, last_name, major, email, hobbies, age, image) {
+  if (image) {
+    if (!(image.name.endsWith(".png") || image.name.endsWith(".jpg") || image.name.endsWith(".jpeg"))) {
+      return "Invalid image type. We only accept PNG and JPG/JPEG.";
+    }
   }
   if (!/^[A-Za-z][A-Za-z0-9_]{2,9}$/.test(username)) {
     return "Invalid username! It should start with a letter and be 3-10 characters long.";
+  }
+  if (!/^[A-Za-z, ]+$/.test(hobbies)) {
+    console.log("hobbies: " + hobbies);
+    return "Invalid hobbies. Only letters and ,";
   }
   if (!/^[A-Za-z]+$/.test(first_name)) {
     return "Invalid first name! It should only include letters.";
@@ -210,7 +220,7 @@ function getPotentialFriends(user_id) {
   // promises will handle the async stuff
   return new Promise((resolve, reject) => {
     // Select all users that aren't the original user and courses that follow the same course as the input user.
-    db.all(`SELECT ff.user_id, ff.course, u.first_name, u.last_name 
+    db.all(`SELECT u.username, ff.user_id, ff.course, u.first_name, u.last_name 
             FROM Follows fu JOIN Follows ff JOIN User u 
             ON fu.user_id = ? AND ff.course = fu.course AND ff.user_id != ? AND ff.user_id = u.id
             ORDER BY ff.course`, [user_id, user_id], (err, rows) => {
@@ -275,10 +285,11 @@ function getUserCourses(user_id) {
   });
 }
 
-function updateUserData(user_id, username, first_name, last_name, age, email, major, courses, callback) {
-    let inputValidation = validateInput(username, first_name, last_name, major, email, age);
+function updateUserData(user_id, username, first_name, last_name, age, email, major, courses, hobbies, callback) {
+    let inputValidation = validateInput(username, first_name, last_name, major, email, hobbies, age, null)
 
     if (inputValidation !== true) {
+        console.log("validation failed: " + inputValidation);
         return inputValidation;
     }
 
@@ -302,15 +313,26 @@ function updateUserData(user_id, username, first_name, last_name, age, email, ma
       }
     })
     });
-    new Promise(db.get("SELECT username from User WHERE id = ?", [user_id], (err, row) => {
+  new Promise((resolve, reject) => {db.get("SELECT username from User WHERE id = ?", [user_id], (err, row) => {
       if (err) {
         reject("Error getting userdata");
       } else {
-        if (row != username) {
-          fs.rename(`public/images/userimages/${row}`, `public/images/userimages/${username}`, (err) => { if (err) throw err; })
+        console.log(`ROW: ${row.username}`)
+        if (row.username != username) {
+          if (fs.existsSync(`public/images/userimages/${row.username}.png`)) {
+            fs.rename(`public/images/userimages/${row.username}.png`, `public/images/userimages/${username}.png`, (err) => { if (err) throw err; });
+          }
+          else if (fs.existsSync(`public/images/userimages/${row.username}.jpg`)) {
+            fs.rename(`public/images/userimages/${row.username}.jpg`, `public/images/userimages/${username}.jpg`, (err) => { if (err) throw err; });
+          }
+          else {
+            console.log("FILE NOT FOUND.")
+          }
+          
+          resolve("changed file.");
         }
       }
-    }));
+  })});
 
     const updateQuery = db.prepare(`UPDATE User 
                                   SET username = ?, first_name = ?, last_name = ?, age = ?, email = ?, major = ?
@@ -329,7 +351,6 @@ function updateUserData(user_id, username, first_name, last_name, age, email, ma
 function authorizeUser(username, password) {
   // promises will handle the async stuff
   var password = crypto.createHash('sha512').update(password).digest('hex');
-  console.log("username:" + username + "Password:" + password)
   return new Promise((resolve, reject) => {
     db.all("SELECT * FROM User WHERE username = ? AND password = ?", [username, password], (err, rows) => {
       if (err) {

@@ -8,6 +8,7 @@
     <script src="chat.js"></script>
     <script src="profile.js"></script>
     <script src="friendsMenu.js"></script>
+    <script src="potentialFriendsMenu.js"></script>
 </head>
 <body>
     <header>
@@ -21,6 +22,9 @@
                 <img class="icon" src="images/profile-blank.png">
             </button>
             <button id="friends-menu-button">
+                <img class="icon" src="images/profile-blank.png">
+            </button>
+            <button id="potential-friends-menu-button">
                 <img class="icon" src="images/profile-blank.png">
             </button>
         </div>
@@ -60,6 +64,8 @@
             <input id="email" type="text" name="email" required placeholder="student@uu.nl">
             <label for="age">Age</label>
             <input id="age" type="number" name="age" required>
+            <label for="hobbies">Hobbies</label>
+            <input id="hobbies" type="text" name="hobbies" required placeholder="bouldering, programming"> 
             <label id="courses_label">Courses</label>
             <input id="courses" type="text" name="courses"/>
             <button type="submit" id="change-button">Change</button>
@@ -67,6 +73,9 @@
     </section>
 
     <section id="friends-menu-container">
+    </section>
+
+    <section id="potential-friends-menu-container">
     </section>
 
 </body>

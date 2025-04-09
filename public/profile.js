@@ -7,6 +7,7 @@ async function fetchUserInfo() {
         document.getElementById("age").value = data.age || '';
         document.getElementById("email").value = data.email || '';
         document.getElementById("major").value = data.major || '';
+        document.getElementById("hobbies").value = data.hobbies || '';
 
 
         submitButton = document.getElementsByClassName("change-button")[0];
@@ -22,6 +23,7 @@ async function fetchUserInfo() {
         //Insert a selector to where you can choose courses and add the courses that are followd
         const courseContainer = createSelection(coursesData);
         courseContainer.id = "course-container";
+        
 
         userCoursesData.forEach(courseData => {
             const courseTag = createTag(courseData.course);
@@ -31,6 +33,9 @@ async function fetchUserInfo() {
 
         document.getElementById("profile-form").insertBefore(courseContainer, document.getElementById("change-button"));
         majorMenu = document.getElementById("major");
+        while (majorMenu.hasChildNodes()) {
+          majorMenu.removeChild(list.firstChild);
+        }
         majors = await fetch("/api/majors", {method: 'GET', credentials: 'include'}).then(x => x.json()).then(data => {return data}); 
         majors.forEach(major => {
           selectElement = document.createElement("option");

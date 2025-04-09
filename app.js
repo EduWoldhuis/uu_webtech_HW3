@@ -57,6 +57,7 @@ app.post("/api/changeInformation", async function (req, res){
     let age = req.body.age;
     let email = req.body.email;
     let major = req.body.major;
+    let hobbies = req.body.hobbies;
     let courses;
     if (req.body.courses == "") {
       courses = [];
@@ -65,7 +66,7 @@ app.post("/api/changeInformation", async function (req, res){
     }
     console.log("COURSES: " + courses);
 
-    const updateUserDataDone = db.updateUserData(user_id, username, first_name, last_name, age, email, major, courses, console.log);
+    const updateUserDataDone = db.updateUserData(user_id, username, first_name, last_name, age, email, major, courses, hobbies, console.log);
     if (updateUserDataDone !== true) {
         res.status(405);
     } else {
@@ -84,10 +85,11 @@ app.post("/api/register",
     let major = req.body.major;
     let email = req.body.email;
     let age = req.body.age;
+    let hobbies = req.body.hobbies;
     let image = req.files.user_image
 
 
-    db.createUser(username, password, first_name, last_name, major, email, age, image, (err) => {
+    db.createUser(username, password, first_name, last_name, major, email, hobbies, age, image, (err) => {
       if (err) {
         console.log(err);
         res.status(500).send("Failed to create user: " + err);
@@ -140,7 +142,7 @@ app.get("/api/message",
             const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
             db.getUserId(otherUsername).then(otherUser => {
                 if (otherUser.length == 0) {;
-                    throw new Error("no friend selected");
+                    console.log("no friend selected");
                 }
                 db.getMessage(since, req.cookies.id, otherUser).then((messages) => {
                     res.send(messages)
@@ -308,8 +310,8 @@ app.post("/profile",
     let age = req.body.age;
     let email = req.body.email;
     let major = req.body.major;
-
-    let courses = req.body.courses
+    let hobbies = req.body.hobbies;
+    let courses = req.body.courses;
     // cooked
     if (!Array.isArray(courses)) {
         courses = courses ? [courses] : [];
@@ -320,7 +322,7 @@ app.post("/profile",
       // Check for authorization
       const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
 
-      db.updateUserdata(decoded.id, username, first_name, last_name, age, email, major, courses, (err) => {
+      db.updateUserdata(decoded.id, username, first_name, last_name, age, email, major, courses, hobbies, (err) => {
         if (err) {
           console.error("Error inserting:", err);
           res.status(500).send("Failed to update: " + err.message);
