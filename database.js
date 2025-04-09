@@ -434,7 +434,6 @@ function createFriendRequest(user_id_sender, user_id_reciever, callback) {
 function createNewFriend(userId1, userId2, callback) {
   let deleting;
   let inserting;
-  console.log("in db call");
   //Remove friendrequest 
   db.run("DELETE FROM FriendRequest WHERE user_id_sender = ? AND user_id_reciever = ? OR user_id_sender = ? AND user_id_reciever = ?",
   [userId1, userId2, userId2, userId1], (err) => {
