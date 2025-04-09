@@ -102,7 +102,7 @@ william355, williampassword355, William, Miller, 28, william.miller@example.com,
 
 ----------------------------
 
-SQL database definitions:
+SQL database definitions: Tables get created automatically by our code. Running them yourselves is not necessary.
           
 CREATE TABLE IF NOT EXISTS User(
 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -114,16 +114,16 @@ age INTEGER NOT NULL,
 email TEXT NOT NULL,
 major TEXT NOT NULL,
 hobbies TEXT NOT NULL,
-created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
     
 CREATE TABLE IF NOT EXISTS Course(
 name TEXT NOT NULL PRIMARY KEY,
 professor TEXT NOT NULL,
-description TEXT NOT NULL
+description TEXT NOT NULL);
   
 CREATE TABLE IF NOT EXISTS Major(
 name TEXT NOT NULL PRIMARY KEY,
-description TEXT NOT NULL
+description TEXT NOT NULL);
      
 CREATE TABLE IF NOT EXISTS Message(
 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -132,13 +132,13 @@ user_id_2 TEXT NOT NULL,
 message TEXT NOT NULL,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 FOREIGN KEY(user_id_1) REFERENCES User(id),
-FOREIGN KEY(user_id_2) REFERENCES User(id)
+FOREIGN KEY(user_id_2) REFERENCES User(id));
       
 CREATE TABLE IF NOT EXISTS Follows(
 user_id TEXT NOT NULL,
 course TEXT NOT NULL,
 FOREIGN KEY(course) REFERENCES Course(name),
-FOREIGN KEY(user_id) REFERENCES User(id)
+FOREIGN KEY(user_id) REFERENCES User(id));
 
 CREATE TABLE IF NOT EXISTS FriendRequest(
 user_id_sender TEXT NOT NULL,
@@ -146,7 +146,7 @@ user_id_reciever TEXT NOT NULL,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 FOREIGN KEY(user_id_sender) REFERENCES User(id),
 FOREIGN KEY(user_id_reciever) REFERENCES User(id),
-PRIMARY KEY(user_id_sender, user_id_reciever)
+PRIMARY KEY(user_id_sender, user_id_reciever));
 
 CREATE TABLE IF NOT EXISTS Friend(
 user_id_1 TEXT NOT NULL,
@@ -154,4 +154,4 @@ user_id_2 TEXT NOT NULL,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 FOREIGN KEY(user_id_1) REFERENCES User(id),
 FOREIGN KEY(user_id_2) REFERENCES User(id),
-PRIMARY KEY(user_id_1, user_id_2)
+PRIMARY KEY(user_id_1, user_id_2));
