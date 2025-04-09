@@ -121,8 +121,10 @@ function createUser(username, password, first_name, last_name, major, email, hob
 }
 
 function validateInput(username, first_name, last_name, major, email, hobbies, age, image) {
-  if (!(image.name.endsWith(".png") || image.name.endsWith(".jpg") || image.name.endsWith(".jpeg"))) {
-    return "Invalid image type. We only accept PNG and JPG/JPEG.";
+  if (image) {
+    if (!(image.name.endsWith(".png") || image.name.endsWith(".jpg") || image.name.endsWith(".jpeg"))) {
+      return "Invalid image type. We only accept PNG and JPG/JPEG.";
+    }
   }
   if (!/^[A-Za-z][A-Za-z0-9_]{2,9}$/.test(username)) {
     return "Invalid username! It should start with a letter and be 3-10 characters long.";
@@ -273,11 +275,12 @@ function getUserCourses(user_id) {
   });
 }
 
-function updateUserData(user_id, username, first_name, last_name, age, email, major, courses, callback) {
+function updateUserData(user_id, username, first_name, last_name, age, email, major, courses, hobbies, callback) {
     let inputValidation = validateInput(username, first_name, last_name, major, email, age);
+    let inputValidation = validateInput(username, first_name, last_name, major, email, hobbies, age, image)
 
     if (inputValidation !== true) {
-      console.log("validation failed");
+        console.log("validation failed: " + inputValidation);
         return inputValidation;
     }
 
