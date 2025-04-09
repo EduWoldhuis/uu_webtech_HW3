@@ -131,7 +131,7 @@ function validateInput(username, first_name, last_name, major, email, hobbies, a
     return "Invalid hobbies. Only letters and ,";
   }
   if (!/^[A-Za-z]+$/.test(first_name)) {
-    return "Invalid first name! It should only include letters.";
+    return "Invalid first name;! It should only include letters.";
   }
   if (!/^[A-Za-z]+$/.test(last_name)) {
     return "Invalid first name! It should only include letters.";
@@ -150,8 +150,18 @@ function validateInput(username, first_name, last_name, major, email, hobbies, a
 }
 
 function createMessage(currentUserId, otherUserId, message, callback) {
+  if (!/^[0-9]+$/.test(currentUserId)) {
+    return "Wrong ID";
+  }
+  if (!/^[0-9]+$/.test(otherUserId)) {
+    return "Wrong ID";
+  }
+  if (!/^[A-Za-z0-9_,.]+$/.test(message)) {
+    return "Message may have an injection.";
+  }
   // Todo: XSS validation
     //console.log(currentUserId, otherUserId, "id" + otherUserId.id);
+
   const insertQuery = db.prepare("INSERT INTO Message (user_id_1, user_id_2, message) VALUES (?, ?, ?)");
   insertQuery.run([currentUserId, otherUserId, message], (err) => {if (err) {return callback(err)}});
   callback(null);
@@ -159,6 +169,9 @@ function createMessage(currentUserId, otherUserId, message, callback) {
 
 function getMessage(since, currentUserId, otherUserId) {
   // promises will handle the async stuff
+    if (!since.match("^[0-9]{1,9}$")) { 
+      return "hacking attempt."
+    }
     let otherUserID = otherUserId[0].id;
     return new Promise((resolve, reject) => {
     const query = `SELECT m.id, m.message, u.username 
@@ -350,6 +363,9 @@ function updateUserData(user_id, username, first_name, last_name, age, email, ma
 }
 
 function authorizeUser(username, password) {
+  if (!/^[A-Za-z][A-Za-z0-9_]{2,9}$/.test(username)) {
+    return "Invalid username! It should start with a letter and be 3-10 characters long.";
+  }
   // promises will handle the async stuff
   var password = crypto.createHash('sha512').update(password).digest('hex');
   return new Promise((resolve, reject) => {
@@ -376,6 +392,9 @@ function getUsername(user_id) {
 }
 
 function getUserId(Username) {
+  if (!/^[A-Za-z][A-Za-z0-9_]{2,9}$/.test(username)) {
+    return "Invalid username! It should start with a letter and be 3-10 characters long.";
+  }
     return new Promise((resolve, reject) => {
         db.all("SELECT * FROM User WHERE Username = ?", [Username], (err, rows) => {
             if (err) {
@@ -419,6 +438,9 @@ function getOutgoingFriendRequests(user_id) {
 }
 
 function createFriendRequest(user_id_sender, user_id_reciever, callback) {
+  if (!user_id_reciever.match("^[0-9]{1,9}$")) { 
+    return "hacking attempt."
+  }
   const insertQuery = db.prepare("INSERT INTO FriendRequest (user_id_sender, user_id_reciever) VALUES (?, ?)");
   insertQuery.run([user_id_sender, user_id_reciever], (err) => {
       if (err) {
@@ -431,6 +453,9 @@ function createFriendRequest(user_id_sender, user_id_reciever, callback) {
 }
 
 function createNewFriend(userId1, userId2, callback) {
+  if (!userId2.match("^[0-9]{1,9}$")) { 
+    return "hacking attempt."
+  }
   let deleting;
   let inserting;
   //Remove friendrequest 
