@@ -1,81 +1,83 @@
 <!DOCTYPE html>
-<head>
-    <meta charset="utf-8">
-    <meta title="Home page of ...">
-    <meta description="this is a social media platform for students">
-    <link rel="stylesheet" href="css/home.css">
-    <script src="navigation.js"></script>
-    <script src="chat.js"></script>
-    <script src="profile.js"></script>
-    <script src="friendsMenu.js"></script>
-    <script src="potentialFriendsMenu.js"></script>
-</head>
-<body>
-    <header>
-        <img class="logo" src="images/logo.jpg">
-        WEBTECH
-        <div id="main-navigation" class="center-header">
-            <button id="chat-button">
-                <img class="icon" src="images/chat-icon.png">
-            </button>
-            <button id="profile-button">
-                <img class="icon" src="images/profile-blank.png">
-            </button>
-            <button id="friends-menu-button">
-                <img class="icon" src="images/profile-blank.png">
-            </button>
-            <button id="potential-friends-menu-button">
-                <img class="icon" src="images/profile-blank.png">
-            </button>
-        </div>
-    </header>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="Webtech social media website, join now!">
+        <link rel="stylesheet" href="css/home.css">
+        <script src="navigation.js"></script>
+        <script src="chat.js"></script>
+        <script src="profile.js"></script>
+        <script src="friendsMenu.js"></script>
+        <script src="potentialFriendsMenu.js"></script>
+        <title>Webtech</title>
+    </head>
+    <body>
+        <header>
+            <img class="logo" src="images/logo.jpg" alt="The logo of this website. A bird with many colors with the text: lorumipsum below">
+            WEBTECH
+            <div id="main-navigation" class="center-header">
+                <button id="chat-button">
+                    <img class="icon" src="images/chat-icon.png" alt="an image of a chat (chat)">
+                </button>
+                <button id="profile-button">
+                    <img class="icon" src="images/profile-blank.jpg" alt="an image of a profile icon, like a black stickman (profile)">
+                </button>
+                <button id="friends-menu-button">
+                    <img class="icon" src="images/friends.png" alt="an image of three friends hugging each other (friends)">
+                </button>
+                <button id="potential-friends-menu-button" >
+                    <img class="icon" src="images/potensialfriends.png" alt="an imame of two stickman shaking hands (meet new people)">
+                </button>
+            </div>
+        </header>
 
-    <section id="chat">
-        <h1>Chat</h1>
-        <select id="message-friend-menu">
+        <section id="chat">
+            <h1>Chat</h1>
+            <select id="message-friend-menu">
 
-        </select>
-        <button id="change-chat-button">Load chat</button>
-        <div id="message-container">
+            </select>
+            <button id="change-chat-button">Load chat</button>
+            <div id="message-container">
 
-        </div>
-        <form id="chat-box" action="/api/message" method="POST" target="hiddenFrame">
-            <input type="text" name="message" placeholder="message" required>
-            <button id="chat-send-button" type="submit">Send</button>
-            <input class="invisible-data" id="otherUsername" type="text" name="otherUsername">
-        </form>
-    </section>
+            </div>
+            <form id="chat-box" action="/api/message" method="POST" target="hiddenFrame">
+                <input type="text" name="message" placeholder="message" required>
+                <button id="chat-send-button" type="submit">Send</button>
+                <input class="invisible-data" id="otherUsername" type="text" name="otherUsername">
+            </form>
+        </section>
     
-    <iframe name="hiddenFrame" width="0" height="0" style="display: none"></iframe>
-    <!-- Hidden iframe so the form doesn't redirect -->
+        <iframe name="hiddenFrame" width="0" height="0" style="display: none"></iframe>
+        <!-- Hidden iframe so the form doesn't redirect -->
     
-    <section id="profile-container">
-        <h2>Profile</h2>
-        <form id="profile-form" action="/api/changeInformation" method="post" target: hiddenFrame>
-            <label for="username">Username</label>
-            <input id="username" type="text" name="username" required placeholder="username">
-            <label for="first_name">First name</label>
-            <input id="first_name" type="text" name="first_name" required placeholder="first name">
-            <label for="last_name">Last name</label>
-            <input id="last_name" type="text" name="last_name" required placeholder="last name">
-            <label for="major">Major</label>
-            <select name="major" id="major"></select>
-            <label for="email">Emailaddres</label>
-            <input id="email" type="text" name="email" required placeholder="student@uu.nl">
-            <label for="age">Age</label>
-            <input id="age" type="number" name="age" required>
-            <label for="hobbies">Hobbies</label>
-            <input id="hobbies" type="text" name="hobbies" required placeholder="bouldering, programming"> 
-            <label id="courses_label">Courses</label>
-            <input id="courses" type="text" name="courses"/>
-            <button type="submit" id="change-button">Change</button>
-        </form>
-    </section>
+        <section id="profile-container">
+            <h2>Profile</h2>
+            <form id="profile-form" action="/api/changeInformation" method="post" target="hiddenFrame">
+                <label for="username">Username</label>
+                <input id="username" type="text" name="username" required placeholder="username">
+                <label for="first_name">First name</label>
+                <input id="first_name" type="text" name="first_name" required placeholder="first name">
+                <label for="last_name">Last name</label>
+                <input id="last_name" type="text" name="last_name" required placeholder="last name">
+                <label for="major">Major</label>
+                <select name="major" id="major"></select>
+                <label for="email">Emailaddres</label>
+                <input id="email" type="text" name="email" required placeholder="student@uu.nl">
+                <label for="age">Age</label>
+                <input id="age" type="number" name="age" required>
+                <label for="hobbies">Hobbies</label>
+                <input id="hobbies" type="text" name="hobbies" required placeholder="bouldering, programming"> 
+                <label id="courses_label">Courses</label>
+                <input id="courses" type="text" name="courses">
+                <button type="submit" id="change-button">Change</button>
+            </form>
+        </section>
 
-    <section id="friends-menu-container">
-    </section>
+        <section id="friends-menu-container">
+        </section>
 
-    <section id="potential-friends-menu-container">
-    </section>
+        <section id="potential-friends-menu-container">
+        </section>
 
-</body>
+    </body>
+</html>

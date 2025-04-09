@@ -1,27 +1,29 @@
 <!DOCTYPE html>
-<head>
-    <meta charset="utf-8">
-    <meta title="Login page of ...">
-    <meta description="Login page or create an acoount">
-    <link rel="stylesheet" href="css/register.css">
-    <script src="js/register.js"></script>
-</head>
-<body>
-    <section>
-        <h1>WEBTECH</h1>
-        <!--the enctype is necessary because of the fileupload.-->
-        <form id="registerForm" method="POST" enctype="multipart/form-data">
-            <input type="text" name="username" required placeholder="Username"> 
-            <input type="password" name="password" required placeholder="Password">
-            <input type="text" name="first_name" required placeholder="First name"> 
-            <input type="text" name="last_name" required placeholder="Last name"> 
-            <select name="major" id="major"></select>
-            <input type="text" name="email" required placeholder="student@uu.nl"> 
-            <input type="text" name="hobbies" required placeholder="bouldering, programming"> 
-            <input type="number" name="age" required placeholder="Age">
-            <input type="file" name="user_image" accept="image/*" required>
-            <button type="submit" class="register-button">Register</button>
-            <a href="/login">Log in</a>
-        </form>
-    </section>
-</body>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="Login page of Webtech social media website, join now!">
+        <link rel="stylesheet" href="css/register.css">
+        <script src="js/register.js"></script>
+        <title>Webtech</title>
+    </head>
+    <body>
+        <section>
+            <h1>WEBTECH</h1>
+            <!--the enctype is necessary because of the fileupload.-->
+            <form id="registerForm" method="POST" enctype="multipart/form-data">
+                <input type="text" name="username" required placeholder="Username"> 
+                <input type="password" name="password" required placeholder="Password">
+                <input type="text" name="first_name" required placeholder="First name"> 
+                <input type="text" name="last_name" required placeholder="Last name"> 
+                <select name="major" id="major"></select>
+                <input type="text" name="email" required placeholder="student@uu.nl"> 
+                <input type="text" name="hobbies" required placeholder="bouldering, programming"> 
+                <input type="number" name="age" required placeholder="Age">
+                <input type="file" name="user_image" accept="image/*" required>
+                <button type="submit" class="register-button">Register</button>
+                <a href="/login">Log in</a>
+            </form>
+        </section>
+    </body>
+</html>
