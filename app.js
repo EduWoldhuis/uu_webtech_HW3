@@ -419,7 +419,6 @@ app.post("/group31/api/acceptFriendRequest",
     const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
     let user_id_reciever = parseInt(req.query.friendid);
     let user_id_sender = decoded.id;
-    console.log("before db call");
     db.createNewFriend(user_id_sender, user_id_reciever, (err) => {
       if (err) {
         console.log(err);
