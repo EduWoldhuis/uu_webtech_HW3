@@ -1,3 +1,4 @@
+//The main server file
 // For the authorization we will use JWT.
 // Encryption for password will be SHA512
 var http = require('http');
@@ -49,6 +50,7 @@ app.get("/login", function (req, res) {
     res.sendFile(__dirname + "/login.html");
 })
 
+//request to change information when user sends a form with changed profile information
 app.post("/api/changeInformation", async function (req, res){
     let user_id = req.cookies.id;
     let username = req.body.username;
@@ -92,7 +94,7 @@ app.post("/api/register",
     db.createUser(username, password, first_name, last_name, major, email, hobbies, age, image, (err) => {
       if (err) {
         console.log(err);
-        res.status(500).send("Failed to create user: " + err);
+        res.send("Failed to create user: " + err);
       } else {
           res.redirect("/login");
       }
@@ -105,10 +107,11 @@ app.post("/api/message",
         let message = req.body.message;
         let otherUsername = req.body.otherUsername;
         try {
-            //const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
-            //let uid = decoded.id;
-            let uid = req.cookies.id;
+            //verify user
+            const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+            let uid = decoded.id;
 
+            //Wait until the promise is returned of getUserId, than create a message and send a response arrordingly
             db.getUserId(otherUsername).then(otherUser =>
                 db.createMessage(uid, otherUser[0].id, message, (err) => {
                     if (err) {
@@ -279,6 +282,7 @@ app.get("/api/courses",
   }
 );
 
+//Get all the courses that the user had followed
 app.get("/api/follows",
   function (req, res) {
     try {

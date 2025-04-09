@@ -1,3 +1,6 @@
+//All functions related to the friends page of the website
+
+//toggle menu on or off
 function toggleFriendsMenu(display) {
     const friendMenuContainer = document.getElementById("friends-menu-container");
     friendMenuContainer.innerHTML = "";
@@ -18,6 +21,7 @@ async function fetchFriends() {
     buildFriends(friends);
 }
 
+//add all friendcontainers to the menu container
 async function buildFriends(friends) {
 
     for (i = 0; i < friends.length; i++) {
@@ -32,6 +36,7 @@ async function buildFriends(friends) {
     }
 }
 
+//create a friend container with all its information
 async function createFriend(friend) {
     const friendMenuContainer = document.getElementById("friends-menu-container");
         const friendSection = document.createElement("section");

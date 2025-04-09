@@ -1,22 +1,23 @@
+<!-- The login page of the website -->
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta name="description" content="Login page of Webtech social media website, join now!">
-        <link rel="stylesheet" href="css/login.css">
-        <title>Webtech</title>
-    </head>
-    <body>
-        <section>
-            <h1>WEBTECH</h1>
-            <!--the enctype is necessary because of the fileupload.-->
-            <form action="/api/login" method="post" enctype="multipart/form-data">
-                <input type="text" name="username" required placeholder="Username">
-                <input type="password" name="password" required placeholder="Password">
-                <button type="submit" class="login-button">Log in</button>
-                <a href="/">Register</a>
-                <a href="/images/L.jpg">Forgot password?</a>
-            </form>
-        </section>
-    </body>
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Login page of Webtech social media website, join now!">
+    <link rel="stylesheet" href="css/login.css">
+    <title>Webtech</title>
+</head>
+<body>
+    <section>
+        <h1>WEBTECH</h1>
+        <!--the enctype is necessary because of the fileupload.-->
+        <form action="/api/login" method="post" enctype="multipart/form-data">
+            <input type="text" name="username" required placeholder="Username">
+            <input type="password" name="password" required placeholder="Password">
+            <button type="submit" class="login-button">Log in</button>
+            <a href="/">Register</a>
+            <a href="/images/L.jpg">Forgot password?</a>
+        </form>
+    </section>
+</body>
 </html>

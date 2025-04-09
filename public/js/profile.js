@@ -1,6 +1,7 @@
+//All functions related to the profile page of the website
 async function fetchUserInfo() {
     try {
-        data = await fetch("/api/userdata", { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data })
+        data = await fetch("/api/userdata", { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data });
         document.getElementById("username").value = data.username || '';
         document.getElementById("first_name").value = data.first_name || '';
         document.getElementById("last_name").value = data.last_name || '';
@@ -8,7 +9,6 @@ async function fetchUserInfo() {
         document.getElementById("email").value = data.email || '';
         document.getElementById("major").value = data.major || '';
         document.getElementById("hobbies").value = data.hobbies || '';
-
 
         submitButton = document.getElementsByClassName("change-button")[0];
         const coursesData = await fetch("/api/courses", { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data });
@@ -30,18 +30,18 @@ async function fetchUserInfo() {
             courseContainer.appendChild(courseTag);
         });
 
-
+        //Add al majors and remove old
         document.getElementById("profile-form").insertBefore(courseContainer, document.getElementById("change-button"));
         majorMenu = document.getElementById("major");
         while (majorMenu.hasChildNodes()) {
-          majorMenu.removeChild(list.firstChild);
+            majorMenu.removeChild(list.firstChild);
         }
         majors = await fetch("/api/majors", {method: 'GET', credentials: 'include'}).then(x => x.json()).then(data => {return data}); 
         majors.forEach(major => {
-          selectElement = document.createElement("option");
-          selectElement.value = major.name;
-          selectElement.innerText = major.name;
-          majorMenu.appendChild(selectElement);
+            selectElement = document.createElement("option");
+            selectElement.value = major.name;
+            selectElement.innerText = major.name;
+            majorMenu.appendChild(selectElement);
         });
         majorMenu.value = data.major;
         
@@ -55,6 +55,7 @@ function getSelectedCourses() {
     return Array.from(selectedCourses);
 }
 
+//Create a tag for the courses so courses can be easily added and removed
 function createTag(title) {
     const tag = document.createElement("div");
     const tagTitle = document.createElement("p");
@@ -63,7 +64,7 @@ function createTag(title) {
     tagTitle.textContent += title;
     removeButton.textContent += "Remove";
     removeButton.addEventListener("click", function () { 
-        removeButton.parentElement.remove()
+        removeButton.parentElement.remove();
     });
 
     tag.appendChild(tagTitle);
@@ -72,7 +73,7 @@ function createTag(title) {
     return tag;
 }
 
-//Create a selection menu ONLY FOR AN ARRAY WITH ELEMENTS WITH A NAME VALUE
+//Create a selection menu for the courses
 function createSelection(options) {
     const selectContainer = document.createElement("div");
     const select = document.createElement("select");
@@ -89,7 +90,7 @@ function createSelection(options) {
     selectButton.addEventListener("click", function (event) {
         event.preventDefault();
         if (!getSelectedCourses().includes(select.value)) {
-            selectContainer.appendChild(createTag(select.value))
+            selectContainer.appendChild(createTag(select.value));
         }
     });
 
@@ -98,7 +99,7 @@ function createSelection(options) {
     return selectContainer;
 }
 
-
+//toggle the profile menu on or off
 function toggleProfile(displayProfile){
     const profile = document.getElementById("profile-container");
     if (displayProfile) {
@@ -126,8 +127,3 @@ function onDomLoaded() {
 }
 
 document.addEventListener("DOMContentLoaded", onDomLoaded);
-
-
-
-// When the elements are loaded, start a loop fetching the messages.
-//window.addEventListener('DOMContentLoaded', fetchUserInfo);

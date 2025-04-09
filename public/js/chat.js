@@ -1,3 +1,4 @@
+//All functions related to the chat menu
 let fetchMessagesInterval;
 let lastMessageID = 1; 
 let username = "";
@@ -14,13 +15,16 @@ async function fetchUsername() {
     }
 }
 
+//Fetch messages and display them in the message container for the user
 async function fetchMessages() {
     try {
+        //A fetch request requesting all new messages depending on who the user wants to chat with
         const response = await fetch(`/api/message?since=${lastMessageID}&otherUsername=${otherUsername}`, { method: 'GET', credentials: 'include' })
         const newMessages = await response.json();
         const container = document.getElementById("message-container");
-        console.log("Newmessages: " + newMessages);
 
+
+        //Create a message container for each message and give a class depending if the message is yours or not
         newMessages.forEach(msg => {
             const messageContainerElement = document.createElement("div");
             const messageElement = document.createElement("p");
@@ -51,6 +55,7 @@ async function fetchMessages() {
   }
 }
 
+//toggle chat menu
 function toggleChat(displayChat) {
     const chat = document.getElementById("chat");
     if (displayChat) {
@@ -93,6 +98,7 @@ function clearChat() {
     }
 }
 
+//Fill the friendslist with all friends so user can select who to chat with
 async function fillFriendList() {
     const selectMessageFriend = document.getElementById("message-friend-menu");
     const friendsList = await fetch("/api/allFriends", { method: 'GET' }).then(x => x.json()).then(x => { return x });

@@ -1,3 +1,6 @@
+//All functions related to the potentialFriendsMenu page of the website
+
+//toggle menu on or off
 function togglePotentialFriendsMenu(display) {
     const potentialFriendMenuContainer = document.getElementById("potential-friends-menu-container");
     potentialFriendMenuContainer.innerHTML = "";
@@ -18,6 +21,7 @@ async function fetchPotentialFriends() {
     buildPotentialFriends(friends);
 }
 
+//Add all potensial friends to the menu container
 async function buildPotentialFriends(friends) {
     for (i = 0; i < friends.length; i++) {
         await createPotentialFriend(friends[i]);
@@ -31,6 +35,7 @@ async function buildPotentialFriends(friends) {
     }
 }
 
+//Create potensial friend container 
 async function createPotentialFriend(friend) {
     const potentialFriendMenuContainer = document.getElementById("potential-friends-menu-container");
         const friendSection = document.createElement("section");

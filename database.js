@@ -1,3 +1,4 @@
+//All function that send or retreive data from the database
 var fs = require("fs");
 var path = require("path");
 var file = "test.db";
@@ -61,18 +62,6 @@ db.serialize(() => {
     `, (err) => {if (err) {console.error('Error creating table Message.' + err)}});
 
   db.run(`
-          CREATE TABLE IF NOT EXISTS DirectMessage (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          user_id_sender TEXT NOT NULL,
-          user_id_reciever TEXT NOT NULL,
-          message TEXT NOT NULL,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          FOREIGN KEY (user_id_sender) REFERENCES User(id),
-          FOREIGN KEY (user_id_reciever) REFERENCES User(id)
-        );
-    `, (err) => {if (err) {console.error('Error creating table DirectMessage.')}});
-
-  db.run(`
           CREATE TABLE IF NOT EXISTS Follows (
           user_id TEXT NOT NULL,
           course TEXT NOT NULL, 
@@ -105,30 +94,38 @@ db.serialize(() => {
     `, (err) => {if (err) {console.error('Error creating table Friend.')}});
 });
 
-function createUser(username, password, first_name, last_name, major, email, hobbies, age, image, callback) {  
-  validate = validateInput(username, first_name, last_name, major, email, hobbies, age, image)
-  if (!(image.name.endsWith(".png") || image.name.endsWith(".jpg"))) {
-    return "Invalid image type. We only accept PNG and JPG";
-  }
-  if (validate === true) {
-    // SHA512 to prevent easy bruteforcing
-    var password = crypto.createHash('sha512').update(password).digest('hex');
-    const insertQuery = db.prepare("INSERT INTO User (username, password, first_name, last_name, age, email, hobbies, major) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    insertQuery.run([username, password, first_name, last_name, age, email, hobbies, major], (err) => {if (err) {callback("Username not unique.");}});
-    insertQuery.finalize();
-    if (image.name.endsWith(".png")) {
-      image.mv(path.join(__dirname, 'public', 'images', 'userimages', `${username}.png`));
+//register new user
+function createUser(username, password, first_name, last_name, major, email, hobbies, age, image, callback) {
+    //validate input
+    validate = validateInput(username, first_name, last_name, major, email, hobbies, age, image)
+    if (!(image.name.endsWith(".png") || image.name.endsWith(".jpg"))) {
+        return "Invalid image type. We only accept PNG and JPG";
     }
-    else if (image.name.endsWith(".jpg") || image.name.endsWith(".jpeg")) {
-      image.mv(path.join(__dirname, 'public', 'images', 'userimages', `${username}.jpg`));
+    if (validate === true) {
+        // SHA512 to prevent easy bruteforcing
+        let error;
+        var password = crypto.createHash('sha512').update(password).digest('hex');
+        const insertQuery = db.prepare("INSERT INTO User (username, password, first_name, last_name, age, email, hobbies, major) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        insertQuery.run([username, password, first_name, last_name, age, email, hobbies, major], (err) => {
+            if (image.name.endsWith(".png")) {
+                image.mv(path.join(__dirname, 'public', 'images', 'userimages', `${username}.png`));
+            }
+            else if (image.name.endsWith(".jpg") || image.name.endsWith(".jpeg")) {
+                image.mv(path.join(__dirname, 'public', 'images', 'userimages', `${username}.jpg`));
+            }
+            if (err) {
+                callback(err);
+            } else {
+                callback(null);
+            }
+        });
+        insertQuery.finalize();
+    } else {
+        callback(validate);
     }
-    callback(null);
-  }
-  else {
-    callback(validate);
-  }
 }
 
+//validate input using regex
 function validateInput(username, first_name, last_name, major, email, hobbies, age, image) {
   if (image) {
     if (!(image.name.endsWith(".png") || image.name.endsWith(".jpg") || image.name.endsWith(".jpeg"))) {
@@ -192,6 +189,7 @@ function getMessage(since, currentUserId, otherUserId) {
   });
 }
 
+//Get all data from all friends
 function getAllFriendData(user_id) {
   return new Promise((resolve, reject) => {
       db.all(`SELECT *
@@ -286,6 +284,7 @@ function getUserCourses(user_id) {
   });
 }
 
+//Update the data of an existing usre
 function updateUserData(user_id, username, first_name, last_name, age, email, major, courses, hobbies, callback) {
     let inputValidation = validateInput(username, first_name, last_name, major, email, hobbies, age, null)
 
@@ -391,7 +390,6 @@ function getUserId(Username) {
 function closeDB() {
   db.close();
 }
-
 
 
 module.exports = {
