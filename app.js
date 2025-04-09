@@ -22,7 +22,7 @@ const logStream = fs.createWriteStream(path.join(__dirname, "logs", date), { fla
 
 app.use(
     bodyParser.urlencoded({extended: true}),
-    express.static(__dirname + '/group31/public'),
+    express.static(__dirname + '/public'),
     fileUpload(),
     cookieParser(),
     morgan('combined', {stream: logStream})
