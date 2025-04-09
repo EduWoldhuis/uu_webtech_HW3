@@ -252,6 +252,38 @@ app.get("/group31/api/potentialFriends",
   }
 );
 
+app.get("/group31/api/friendRequests",
+  function (req, res) {
+    try {
+      // Check for authorization
+      const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+      db.getFriendRequests(decoded.id).then((friendRequests) => {
+        res.status(200).send(friendRequests);
+      }).catch((error) => {
+        console.error(error);
+      });
+    } catch (error) {
+      res.status(401).send(error);
+    }
+  }
+);
+
+app.get("/group31/api/outgoingFriendRequests",
+  function (req, res) {
+    try {
+      // Check for authorization
+      const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+      db.getOutgoingFriendRequests(decoded.id).then((friendRequests) => {
+        res.status(200).send(friendRequests);
+      }).catch((error) => {
+        console.error(error);
+      });
+    } catch (error) {
+      res.status(401).send(error);
+    }
+  }
+);
+
 app.get("/group31/api/allFriends", function (req, res) {
     db.getAllFriendData(req.cookies.id).then((friends) => { res.send(friends) }).catch((error) => console.log(error));
 });
@@ -363,6 +395,40 @@ app.get("/group31/chat",
             res.status(401).send("Unauthorized.");
         }
     }
+);
+
+app.post("/group31/api/createFriendRequest",
+  function (req, res) {
+    const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+    let user_id_reciever = parseInt(req.query.friendid);
+    let user_id_sender = decoded.id;
+
+    db.createFriendRequest(user_id_sender, user_id_reciever, (err) => {
+      if (err) {
+        console.log(err);
+        res.send("Failed to create friend request: " + err);
+      } else {
+        res.status(200).send("Friend request created successfully")
+      }
+    }); 
+  }
+);
+
+app.post("/group31/api/acceptFriendRequest",
+  function (req, res) {
+    const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
+    let user_id_reciever = parseInt(req.query.friendid);
+    let user_id_sender = decoded.id;
+    console.log("before db call");
+    db.createNewFriend(user_id_sender, user_id_reciever, (err) => {
+      if (err) {
+        console.log(err);
+        res.send("Failed to create friend: " + err);
+      } else {
+        res.status(200).send("Friend created successfully")
+      }
+    }); 
+  }
 );
 
 app.listen(8080, "127.0.0.1");
