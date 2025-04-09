@@ -49,12 +49,12 @@ async function createPotentialFriend(friend, friendRequestsIds, outgoingFriendRe
             friendPictureContainer.id = "friend-picture-container";
                 const friendPicture = document.createElement("img");
                 friendPicture.id = "friend-picture";
-                friendPicture.src = `/images/userimages/${friend.username}.png`;
+                friendPicture.src = `/group31/images/userimages/${friend.username}.png`;
                 friendPicture.addEventListener('error', function () {
-                    this.src = `/images/userimages/${friend.username}.jpg`;
+                    this.src = `/group31/images/userimages/${friend.username}.jpg`;
                 })
                 friendPicture.addEventListener('error', function () {
-                    this.src = `/images/notfound.png`;
+                    this.src = `/group31/images/notfound.png`;
                 })                
                 friendPictureContainer.appendChild(friendPicture);
 

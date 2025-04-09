@@ -100,7 +100,7 @@ function clearChat() {
 //Fill the friendslist with all friends so user can select who to chat with
 async function fillFriendList() {
     const selectMessageFriend = document.getElementById("message-friend-menu");
-    const friendsList = await fetch("/api/allFriends", { method: 'GET' }).then(x => x.json()).then(x => { return x });
+    const friendsList = await fetch("/group31/api/allFriends", { method: 'GET' }).then(x => x.json()).then(x => { return x });
     console.log("friendllist: " + friendsList);
     friendsList.forEach(friend => {
         const optionEl = document.createElement("option");
