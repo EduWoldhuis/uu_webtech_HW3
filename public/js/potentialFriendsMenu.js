@@ -17,7 +17,7 @@ function togglePotentialFriendsMenu(display) {
 }
 
 async function fetchPotentialFriends() {
-    const friends = await fetch("/api/potentialFriends", { method: 'GET' }).then(x => x.json()).then(x => { return x });
+    const friends = await fetch("/group31/api/potentialFriends", { method: 'GET' }).then(x => x.json()).then(x => { return x });
     buildPotentialFriends(friends);
 }
 
