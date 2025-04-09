@@ -23,16 +23,7 @@ db.serialize(() => {
           hobbies TEXT NOT NULL,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
-    `, (err) => {if (err) {console.error('Error creating table User.')}}); 
-
-  db.run(`
-          CREATE TABLE IF NOT EXISTS Hobby (
-          user_id INTEGER NOT NULL,
-          hobby TEXT NOT NULL,
-          FOREIGN KEY (user_id) REFERENCES User(id)
-      );
-  `, (err) => { if (err) { console.error('Error creating table Hobby.' + err) } }); 
- 
+    `, (err) => {if (err) {console.error('Error creating table User.')}});  
 
   db.run(`
           CREATE TABLE IF NOT EXISTS Course (
@@ -173,13 +164,12 @@ function getMessage(since, currentUserId, otherUserId) {
     const query = `SELECT m.id, m.message, u.username 
                    FROM Message m 
                    JOIN User u ON u.id = m.user_id_1
-                   WHERE (m.created_at > (SELECT m.created_at FROM message m WHERE m.id = ?)
-                   OR (? = 1 AND m.id = 1))
-                   AND(m.user_id_1 = ?
+                   WHERE (m.id > ?)
+                   AND (m.user_id_1 = ?
                    AND m.user_id_2 = ? 
                    OR m.user_id_1 = ?
                    AND m.user_id_2 = ?)`
-    db.all(query, [since, since, currentUserId, otherUserID, otherUserID, currentUserId], (err, rows) => {
+    db.all(query, [since, currentUserId, otherUserID, otherUserID, currentUserId], (err, rows) => {
       if (err) {
         reject("Error getting messages." + err);
       } else {

@@ -1,6 +1,6 @@
 //All functions related to the chat menu
 let fetchMessagesInterval;
-let lastMessageID = 1; 
+let lastMessageID = 0; 
 let username = "";
 let userid = "";
 let otherUsername;
@@ -46,7 +46,6 @@ async function fetchMessages() {
             messageContainerElement.appendChild(messageElement);
 
             lastMessageID = msg.id;
-
             container.scrollTop = container.scrollHeight;
         });
   } catch (error) {
@@ -118,7 +117,7 @@ function onDomLoaded() {
     fillFriendList();
     document.getElementById("change-chat-button").addEventListener("click", function () {
         otherUsername = document.getElementById("message-friend-menu").value;
-        lastMessageID = 1;
+        lastMessageID = 0;
         clearChat();
     });
     document.getElementById("chat-box").querySelector("button").addEventListener("click", clearChatbox);
