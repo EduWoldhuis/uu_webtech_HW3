@@ -75,7 +75,7 @@ app.post("/group31/api/changeInformation", async function (req, res){
   
     }
 
-    res.redirect("/home")
+    res.redirect("/group31/home")
 })
 
 app.post("/group31/api/register",
@@ -96,7 +96,7 @@ app.post("/group31/api/register",
         console.log(err);
         res.send("Failed to create user: " + err);
       } else {
-          res.redirect("/login");
+          res.redirect("/group31/login");
       }
     }); 
   }
@@ -178,13 +178,13 @@ app.post("/group31/api/login",
     }).then((user) => {
     console.log(user);
     if (user.length == 0) {
-      res.redirect('/login');
+        res.redirect('/group31/login');
       return;
     }
     const token = jwt.sign({id: user[0].id}, 'secretKeyWebtech', {expiresIn: '1h',});
     res.cookie('authorization', token);
     res.cookie('id', user[0].id);
-    res.redirect('/home') 
+    res.redirect('/group31/home') 
     }).catch((error) => {console.error("Auth error:" + error); res.status(500).send(error)} );
   }
 );
