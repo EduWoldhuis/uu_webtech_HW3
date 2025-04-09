@@ -130,6 +130,7 @@ function validateInput(username, first_name, last_name, major, email, hobbies, a
     return "Invalid username! It should start with a letter and be 3-10 characters long.";
   }
   if (!/^[A-Za-z, ]+$/.test(hobbies)) {
+    console.log("hobbies: " + hobbies);
     return "Invalid hobbies. Only letters and ,";
   }
   if (!/^[A-Za-z]+$/.test(first_name)) {
@@ -276,8 +277,7 @@ function getUserCourses(user_id) {
 }
 
 function updateUserData(user_id, username, first_name, last_name, age, email, major, courses, hobbies, callback) {
-    let inputValidation = validateInput(username, first_name, last_name, major, email, age);
-    let inputValidation = validateInput(username, first_name, last_name, major, email, hobbies, age, image)
+    let inputValidation = validateInput(username, first_name, last_name, major, email, hobbies, age, null)
 
     if (inputValidation !== true) {
         console.log("validation failed: " + inputValidation);
@@ -304,16 +304,26 @@ function updateUserData(user_id, username, first_name, last_name, age, email, ma
       }
     })
     });
-    new Promise(db.get("SELECT username from User WHERE id = ?", [user_id], (err, row) => {
+  new Promise((resolve, reject) => {db.get("SELECT username from User WHERE id = ?", [user_id], (err, row) => {
       if (err) {
         reject("Error getting userdata");
       } else {
-        if (row != username) {
-          fs.rename(`public/images/userimages/${row}`, `public/images/userimages/${username}`, (err) => { if (err) throw err; })
+        console.log(`ROW: ${row.username}`)
+        if (row.username != username) {
+          if (fs.existsSync(`public/images/userimages/${row.username}.png`)) {
+            fs.rename(`public/images/userimages/${row.username}.png`, `public/images/userimages/${username}.png`, (err) => { if (err) throw err; });
+          }
+          else if (fs.existsSync(`public/images/userimages/${row.username}.jpg`)) {
+            fs.rename(`public/images/userimages/${row.username}.jpg`, `public/images/userimages/${username}.jpg`, (err) => { if (err) throw err; });
+          }
+          else {
+            console.log("FILE NOT FOUND.")
+          }
+          
           resolve("changed file.");
         }
       }
-    }));
+  })});
 
     const updateQuery = db.prepare(`UPDATE User 
                                   SET username = ?, first_name = ?, last_name = ?, age = ?, email = ?, major = ?
