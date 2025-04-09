@@ -375,8 +375,6 @@ function getUserId(Username) {
         })
     });
 }
-
-
 function closeDB() {
   db.close();
 }
