@@ -2,7 +2,7 @@ GroupId: 31
 
 ----------------------------
 
-Authors: Boaz Roskam (7262329), Edu Woldhuis (), Rein Spaan (1651137)
+Authors: Boaz Roskam (7262329), Edu Woldhuis (4800885), Rein Spaan (1651137)
 
 ----------------------------
 
