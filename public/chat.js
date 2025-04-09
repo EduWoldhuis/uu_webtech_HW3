@@ -1,5 +1,5 @@
 let fetchMessagesInterval;
-let lastMessageID = 0; 
+let lastMessageID = 1; 
 let username = "";
 let userid = "";
 let otherUsername;
@@ -86,6 +86,13 @@ function clearChatbox() {
     }, 0);
 }
 
+function clearChat() {
+    const chat = document.getElementById("message-container");
+    while (chat.firstChild) {
+        chat.removeChild(chat.firstChild);
+    }
+}
+
 async function fillFriendList() {
     const selectMessageFriend = document.getElementById("message-friend-menu");
     const friendsList = await fetch("/api/allFriends", { method: 'GET' }).then(x => x.json()).then(x => { return x });
@@ -105,6 +112,8 @@ function onDomLoaded() {
     fillFriendList();
     document.getElementById("change-chat-button").addEventListener("click", function () {
         otherUsername = document.getElementById("message-friend-menu").value;
+        lastMessageID = 1;
+        clearChat();
     });
     document.getElementById("chat-box").querySelector("button").addEventListener("click", clearChatbox);
     document.getElementById("chat-send-button").addEventListener("click", function(event) {

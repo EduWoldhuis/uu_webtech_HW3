@@ -176,12 +176,13 @@ function getMessage(since, currentUserId, otherUserId) {
     const query = `SELECT m.id, m.message, u.username 
                    FROM Message m 
                    JOIN User u ON u.id = m.user_id_1
-                   WHERE ? > m.created_at
+                   WHERE (m.created_at > (SELECT m.created_at FROM message m WHERE m.id = ?)
+                   OR (? = 1 AND m.id = 1))
                    AND(m.user_id_1 = ?
                    AND m.user_id_2 = ? 
                    OR m.user_id_1 = ?
                    AND m.user_id_2 = ?)`
-    db.all(query, [since, currentUserId, otherUserID, otherUserID, currentUserId], (err, rows) => {
+    db.all(query, [since, since, currentUserId, otherUserID, otherUserID, currentUserId], (err, rows) => {
       if (err) {
         reject("Error getting messages." + err);
       } else {
