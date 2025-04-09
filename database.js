@@ -99,10 +99,10 @@ function createUser(username, password, first_name, last_name, major, email, hob
         const insertQuery = db.prepare("INSERT INTO User (username, password, first_name, last_name, age, email, hobbies, major) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         insertQuery.run([username, password, first_name, last_name, age, email, hobbies, major], (err) => {
             if (image.name.endsWith(".png")) {
-                image.mv(path.join(__dirname, 'public', 'images', 'userimages', `${username}.png`));
+                image.mv(path.join(__dirname, 'public', 'group31', 'images', 'userimages', `${username}.png`));
             }
             else if (image.name.endsWith(".jpg") || image.name.endsWith(".jpeg")) {
-                image.mv(path.join(__dirname, 'public', 'images', 'userimages', `${username}.jpg`));
+                image.mv(path.join(__dirname, 'public', 'group31', 'images', 'userimages', `${username}.jpg`));
             }
             if (err) {
                 callback(err);
@@ -169,9 +169,9 @@ function createMessage(currentUserId, otherUserId, message, callback) {
 
 function getMessage(since, currentUserId, otherUserId) {
   // promises will handle the async stuff
-    if (!since.match("^[0-9]{1,9}$")) { 
-      return "hacking attempt."
-    }
+  if (!/^[0-9]{1,9}$/.test(since)) {
+    return "hacking attempt."
+  }  
     let otherUserID = otherUserId[0].id;
     return new Promise((resolve, reject) => {
     const query = `SELECT m.id, m.message, u.username 
@@ -333,11 +333,11 @@ function updateUserData(user_id, username, first_name, last_name, age, email, ma
       } else {
         console.log(`ROW: ${row.username}`)
         if (row.username != username) {
-          if (fs.existsSync(`public/images/userimages/${row.username}.png`)) {
-            fs.rename(`public/images/userimages/${row.username}.png`, `public/images/userimages/${username}.png`, (err) => { if (err) throw err; });
+          if (fs.existsSync(`group31/public/images/userimages/${row.username}.png`)) {
+            fs.rename(`group31/public/images/userimages/${row.username}.png`, `group31/public/images/userimages/${username}.png`, (err) => { if (err) throw err; });
           }
-          else if (fs.existsSync(`public/images/userimages/${row.username}.jpg`)) {
-            fs.rename(`public/images/userimages/${row.username}.jpg`, `public/images/userimages/${username}.jpg`, (err) => { if (err) throw err; });
+          else if (fs.existsSync(`group31/public/images/userimages/${row.username}.jpg`)) {
+            fs.rename(`group31/public/images/userimages/${row.username}.jpg`, `group31/public/images/userimages/${username}.jpg`, (err) => { if (err) throw err; });
           }
           else {
             console.log("FILE NOT FOUND.")
@@ -391,12 +391,14 @@ function getUsername(user_id) {
     });
 }
 
-function getUserId(Username) {
+function getUserId(username) {
   if (!/^[A-Za-z][A-Za-z0-9_]{2,9}$/.test(username)) {
+    console.log("called");
     return "Invalid username! It should start with a letter and be 3-10 characters long.";
   }
+  
     return new Promise((resolve, reject) => {
-        db.all("SELECT * FROM User WHERE Username = ?", [Username], (err, rows) => {
+        db.all("SELECT * FROM User WHERE Username = ?", [username], (err, rows) => {
             if (err) {
                 reject("Error getting username");
             } else {
@@ -438,7 +440,7 @@ function getOutgoingFriendRequests(user_id) {
 }
 
 function createFriendRequest(user_id_sender, user_id_reciever, callback) {
-  if (!user_id_reciever.match("^[0-9]{1,9}$")) { 
+  if (!/^[0-9]{1,9}$/.test(user_id_reciever)) {
     return "hacking attempt."
   }
   const insertQuery = db.prepare("INSERT INTO FriendRequest (user_id_sender, user_id_reciever) VALUES (?, ?)");
@@ -453,7 +455,7 @@ function createFriendRequest(user_id_sender, user_id_reciever, callback) {
 }
 
 function createNewFriend(userId1, userId2, callback) {
-  if (!userId2.match("^[0-9]{1,9}$")) { 
+  if (!/^[0-9]{1,9}$/.test(userId2)) {
     return "hacking attempt."
   }
   let deleting;

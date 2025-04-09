@@ -101,7 +101,6 @@ function clearChat() {
 async function fillFriendList() {
     const selectMessageFriend = document.getElementById("message-friend-menu");
     const friendsList = await fetch("/group31/api/allFriends", { method: 'GET' }).then(x => x.json()).then(x => { return x });
-    console.log("friendllist: " + friendsList);
     friendsList.forEach(friend => {
         const optionEl = document.createElement("option");
         optionEl.textContent += friend.username;
