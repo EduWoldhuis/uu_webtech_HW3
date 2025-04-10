@@ -28,11 +28,11 @@ app.use(
     morgan('combined', {stream: logStream})
 );
 
-app.get("/", function (req, res) {
+app.get("/group31/", function (req, res) {
     res.sendFile(__dirname + "/register.html");
 });
 
-app.get("/getUsername", function (req, res){
+app.get("/group31/getUsername", function (req, res){
   const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
   let uid = decoded.id;
     db.getUsername(uid).then((username) => {
@@ -42,16 +42,16 @@ app.get("/getUsername", function (req, res){
     });
 });
 
-app.get("/home", function (req, res) {
+app.get("/group31/home", function (req, res) {
     res.sendFile(__dirname + "/home.html");
 })
 
-app.get("/login", function (req, res) {
+app.get("/group31/login", function (req, res) {
     res.sendFile(__dirname + "/login.html");
 })
 
 //request to change information when user sends a form with changed profile information
-app.post("/api/changeInformation", async function (req, res){
+app.post("/group31/api/changeInformation", async function (req, res){
     let user_id = req.cookies.id;
     let username = req.body.username;
     let first_name = req.body.first_name;
@@ -78,7 +78,7 @@ app.post("/api/changeInformation", async function (req, res){
     res.redirect("/group31/home")
 })
 
-app.post("/api/register",
+app.post("/group31/api/register",
   function (req, res) {
     let username = req.body.username;
     let password = req.body.password;
@@ -102,7 +102,7 @@ app.post("/api/register",
   }
 );
 
-app.post("/api/message",
+app.post("/group31/api/message",
     function (req, res) {
         let message = req.body.message;
         let otherUsername = req.body.otherUsername;
@@ -130,12 +130,12 @@ app.post("/api/message",
   }
 );
 
-app.get("/",function (req, res) {
+app.get("/group31/",function (req, res) {
   res.sendFile(__dirname + "/register.html");
 });
 
 
-app.get("/api/message",
+app.get("/group31/api/message",
     function (req, res) {
   // We have to use promises because sqlite3 is built asyncronously.
         const since = parseInt(req.query.since) || 0;
@@ -164,7 +164,7 @@ app.get("/api/message",
     }
 );
 
-app.post("/api/login",
+app.post("/group31/api/login",
   function (req, res) {
     let username = req.body.username;
     let password = req.body.password;
@@ -189,7 +189,7 @@ app.post("/api/login",
   }
 );
 
-app.get("/api/userdata",
+app.get("/group31/api/userdata",
   function (req, res) {
     // We have to use promises because sqlite3 is built asyncronously.
     try {
@@ -206,7 +206,7 @@ app.get("/api/userdata",
   }
 );
 
-app.get("/courses", function (req, res) {
+app.get("/group31/courses", function (req, res) {
     db.getCourses().then(courses => {
         res.send(courses)
     }).catch(error => {
@@ -214,7 +214,7 @@ app.get("/courses", function (req, res) {
     });
 });
 
-app.get("/profile",
+app.get("/group31/profile",
     function (req, res) {
         try {
           const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
@@ -225,7 +225,7 @@ app.get("/profile",
     }
 );
 
-app.get("/courses",
+app.get("/group31/courses",
   function (req, res) {
     try {
       const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
@@ -236,7 +236,7 @@ app.get("/courses",
   }
 );
 
-app.get("/api/potentialFriends",
+app.get("/group31/api/potentialFriends",
   function (req, res) {
     try {
       // Check for authorization
@@ -252,7 +252,7 @@ app.get("/api/potentialFriends",
   }
 );
 
-app.get("/api/friendRequests",
+app.get("/group31/api/friendRequests",
   function (req, res) {
     try {
       // Check for authorization
@@ -268,7 +268,7 @@ app.get("/api/friendRequests",
   }
 );
 
-app.get("/api/outgoingFriendRequests",
+app.get("/group31/api/outgoingFriendRequests",
   function (req, res) {
     try {
       // Check for authorization
@@ -284,11 +284,11 @@ app.get("/api/outgoingFriendRequests",
   }
 );
 
-app.get("/api/allFriends", function (req, res) {
+app.get("/group31/api/allFriends", function (req, res) {
     db.getAllFriendData(req.cookies.id).then((friends) => { res.send(friends) }).catch((error) => console.log(error));
 });
 
-app.get("/api/majors",
+app.get("/group31/api/majors",
   function (req, res) {
       db.getMajors().then((majors) => {
         res.send(majors)
@@ -298,7 +298,7 @@ app.get("/api/majors",
   }
 );
 
-app.get("/api/courses",
+app.get("/group31/api/courses",
   function (req, res) {
     try {
       // Check for authorization
@@ -315,7 +315,7 @@ app.get("/api/courses",
 );
 
 //Get all the courses that the user had followed
-app.get("/api/follows",
+app.get("/group31/api/follows",
   function (req, res) {
     try {
       // Check for authorization
@@ -337,7 +337,7 @@ app.get("/api/follows",
   }
 );
 
-app.post("/profile",
+app.post("/group31/profile",
   function (req, res) {
 
     let username = req.body.username;
@@ -372,7 +372,7 @@ app.post("/profile",
   }
 );
 
-app.get("/api/test",
+app.get("/group31/api/test",
   function (req, res) {
     try {
       const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
@@ -383,7 +383,7 @@ app.get("/api/test",
   }
 )
 
-app.get("/chat",
+app.get("/group31/chat",
     function (req, res) {
         try {
             // Check for authorization
@@ -397,7 +397,7 @@ app.get("/chat",
     }
 );
 
-app.post("/api/createFriendRequest",
+app.post("/group31/api/createFriendRequest",
   function (req, res) {
     const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
     let user_id_reciever = parseInt(req.query.friendid);
@@ -414,7 +414,7 @@ app.post("/api/createFriendRequest",
   }
 );
 
-app.post("/api/acceptFriendRequest",
+app.post("/group31/api/acceptFriendRequest",
   function (req, res) {
     const decoded = jwt.verify(req.cookies.authorization, 'secretKeyWebtech');
     let user_id_reciever = parseInt(req.query.friendid);

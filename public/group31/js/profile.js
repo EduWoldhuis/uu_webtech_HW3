@@ -1,7 +1,7 @@
 //All functions related to the profile page of the website
 async function fetchUserInfo() {
     try {
-        data = await fetch("/api/userdata", { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data });
+        data = await fetch("/group31/api/userdata", { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data });
         document.getElementById("username").value = data.username || '';
         document.getElementById("first_name").value = data.first_name || '';
         document.getElementById("last_name").value = data.last_name || '';
@@ -11,8 +11,8 @@ async function fetchUserInfo() {
         document.getElementById("hobbies").value = data.hobbies || '';
 
         submitButton = document.getElementsByClassName("change-button")[0];
-        const coursesData = await fetch("/api/courses", { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data });
-        const userCoursesData = await fetch("/api/follows", { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data });
+        const coursesData = await fetch("/group31/api/courses", { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data });
+        const userCoursesData = await fetch("/group31/api/follows", { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data });
 
         //Remove old selector menu
         const lastCourseContainer = document.getElementById("course-container");
@@ -36,7 +36,7 @@ async function fetchUserInfo() {
         while (majorMenu.hasChildNodes()) {
             majorMenu.removeChild(list.firstChild);
         }
-        majors = await fetch("/api/majors", {method: 'GET', credentials: 'include'}).then(x => x.json()).then(data => {return data}); 
+        majors = await fetch("/group31/api/majors", {method: 'GET', credentials: 'include'}).then(x => x.json()).then(data => {return data}); 
         majors.forEach(major => {
             selectElement = document.createElement("option");
             selectElement.value = major.name;

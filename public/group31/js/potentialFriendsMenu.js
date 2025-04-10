@@ -17,12 +17,12 @@ function togglePotentialFriendsMenu(display) {
 }
 
 async function fetchPotentialFriends() {
-    const incomingFriendRequests = await fetch("/api/friendRequests", { method: 'GET', credentials: 'include'  }).then(x => x.json()).then(x => { return x });
+    const incomingFriendRequests = await fetch("/group31/api/friendRequests", { method: 'GET', credentials: 'include'  }).then(x => x.json()).then(x => { return x });
     const friendRequestsIds = incomingFriendRequests.map(req => parseInt(req.user_id_sender));
-    const outgoingFriendRequests = await fetch("/api/outgoingFriendRequests", { method: 'GET', credentials: 'include'  }).then(x => x.json()).then(x => { return x });
+    const outgoingFriendRequests = await fetch("/group31/api/outgoingFriendRequests", { method: 'GET', credentials: 'include'  }).then(x => x.json()).then(x => { return x });
     const outgoingFriendRequestsIds = outgoingFriendRequests.map(req => parseInt(req.user_id_reciever));
 
-    const friends = await fetch("/api/potentialFriends", { method: 'GET', credentials: 'include'  }).then(x => x.json()).then(x => { return x });
+    const friends = await fetch("/group31/api/potentialFriends", { method: 'GET', credentials: 'include'  }).then(x => x.json()).then(x => { return x });
     buildPotentialFriends(friends, friendRequestsIds, outgoingFriendRequestsIds);
 }
 
@@ -49,12 +49,12 @@ async function createPotentialFriend(friend, friendRequestsIds, outgoingFriendRe
             friendPictureContainer.id = "friend-picture-container";
                 const friendPicture = document.createElement("img");
                 friendPicture.id = "friend-picture";
-                friendPicture.src = `/images/userimages/${friend.username}.png`;
+                friendPicture.src = `/group31/images/userimages/${friend.username}.png`;
                 friendPicture.addEventListener('error', function () {
-                    this.src = `/images/userimages/${friend.username}.jpg`;
+                    this.src = `/group31/images/userimages/${friend.username}.jpg`;
                 })
                 friendPicture.addEventListener('error', function () {
-                    this.src = `/images/notfound.png`;
+                    this.src = `/group31/images/notfound.png`;
                 })                
                 friendPictureContainer.appendChild(friendPicture);
 
@@ -113,7 +113,7 @@ async function createPotentialFriend(friend, friendRequestsIds, outgoingFriendRe
 }
 
 async function sendFriendRequest(friendid) {
-    const response = await fetch(`/api/createFriendRequest?friendid=${friendid}`, { method: 'POST', credentials: 'include' })
+    const response = await fetch(`/group31/api/createFriendRequest?friendid=${friendid}`, { method: 'POST', credentials: 'include' })
 
     const potentialFriendMenuContainer = document.getElementById("potential-friends-menu-container");
     potentialFriendMenuContainer.innerHTML = "";
@@ -126,7 +126,7 @@ async function sendFriendRequest(friendid) {
 }
 
 async function acceptFriendRequest(friendid) {
-    const response = await fetch(`/api/acceptFriendRequest?friendid=${friendid}`, { method: 'POST', credentials: 'include' })
+    const response = await fetch(`/group31/api/acceptFriendRequest?friendid=${friendid}`, { method: 'POST', credentials: 'include' })
 
     const potentialFriendMenuContainer = document.getElementById("potential-friends-menu-container");
     potentialFriendMenuContainer.innerHTML = "";

@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", registerFunction);
 async function registerFunction() {
       
     majorMenu = document.getElementById("major");
-    majors = await fetch("/api/majors", {method: 'GET', credentials: 'include'}).then(x => x.json()).then(data => {return data}); 
+    majors = await fetch("/group31/api/majors", {method: 'GET', credentials: 'include'}).then(x => x.json()).then(data => {return data}); 
     majors.forEach(major => {
       selectElement = document.createElement("option");
       selectElement.value = major.name;
@@ -16,7 +16,7 @@ async function registerFunction() {
         const formData = new FormData(this);
 
         try {
-            const response = await fetch("/api/register", {
+            const response = await fetch("/group31/api/register", {
               method: "POST",
               body: formData,
             });
