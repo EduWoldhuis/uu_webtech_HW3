@@ -17,7 +17,7 @@ function toggleFriendsMenu(display) {
 }
 
 async function fetchFriends() {
-    const friends = await fetch("/group31/api/allFriends", { method: 'GET' }).then(x => x.json()).then(x => { return x });
+    const friends = await fetch("/api/allFriends", { method: 'GET' }).then(x => x.json()).then(x => { return x });
     buildFriends(friends);
 }
 
@@ -45,12 +45,12 @@ async function createFriend(friend) {
             friendPictureContainer.id = "friend-picture-container";
                 const friendPicture = document.createElement("img");
                 friendPicture.id = "friend-picture";
-                friendPicture.src = `/group31/images/userimages/${friend.username}.png`;
+                friendPicture.src = `/images/userimages/${friend.username}.png`;
                 friendPicture.addEventListener('error', function () {
-                    this.src = `/group31/images/userimages/${friend.username}.jpg`;
+                    this.src = `/images/userimages/${friend.username}.jpg`;
                 })
                 friendPicture.addEventListener('error', function () {
-                    this.src = `/group31/images/notfound.png`;
+                    this.src = `/images/notfound.png`;
                 })                
                 friendPictureContainer.appendChild(friendPicture);
 
@@ -88,7 +88,7 @@ async function createFriend(friend) {
 
                 const friendCourses = document.createElement("p");
                 friendCourses.id = "friend-courses";
-                const courses = await fetch(`/group31/api/follows?id=${friend.id}`, { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data });
+                const courses = await fetch(`/api/follows?id=${friend.id}`, { method: 'GET', credentials: 'include' }).then(x => x.json()).then(data => { return data });
                 var courseString = "";
                 if (courses.length == 0) {
                     courseString = "This user follows no courses.";

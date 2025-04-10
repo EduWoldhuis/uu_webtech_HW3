@@ -4,19 +4,19 @@
 <head>
     <meta charset="utf-8">
     <meta name="description" content="Login page of Webtech social media website, join now!">
-    <link rel="stylesheet" href="/group31/css/login.css">
+    <link rel="stylesheet" href="/css/login.css">
     <title>Webtech</title>
 </head>
 <body>
     <section>
         <h1>WEBTECH</h1>
         <!--the enctype is necessary because of the fileupload.-->
-        <form action="/group31/api/login" method="post" enctype="multipart/form-data">
+        <form action="/api/login" method="post" enctype="multipart/form-data">
             <input type="text" name="username" required placeholder="Username">
             <input type="password" name="password" required placeholder="Password">
             <button type="submit" class="login-button">Log in</button>
-            <a href="/group31/">Register</a>
-            <a href="/group31/images/L.jpg">Forgot password?</a>
+            <a href="/">Register</a>
+            <a href="/images/L.jpg">Forgot password?</a>
         </form>
     </section>
 </body>

@@ -7,29 +7,29 @@
     <meta charset="utf-8">
     <meta name="description" content="Home page of Webtech social media website, join now!">
     <link rel="stylesheet" href="css/home.css">
-    <script src="/group31/js/navigation.js"></script>
-    <script src="/group31/js/chat.js"></script>
-    <script src="/group31/js/profile.js"></script>
-    <script src="/group31/js/friendsMenu.js"></script>
-    <script src="/group31/js/potentialFriendsMenu.js"></script>
+    <script src="/js/navigation.js"></script>
+    <script src="/js/chat.js"></script>
+    <script src="/js/profile.js"></script>
+    <script src="/js/friendsMenu.js"></script>
+    <script src="/js/potentialFriendsMenu.js"></script>
     <title>Webtech</title>
 </head>
 <body>
     <header>
-        <img class="logo" src="/group31/images/logo.jpg" alt="The logo of this website. A bird with many colors with the text: lorumipsum below">
+        <img class="logo" src="/images/logo.jpg" alt="The logo of this website. A bird with many colors with the text: lorumipsum below">
         WEBTECH
         <div id="main-navigation" class="center-header">
             <button id="chat-button">
-                <img class="icon" src="/group31/images/chat-icon.png" alt="an image of a chat (chat)">
+                <img class="icon" src="/images/chat-icon.png" alt="an image of a chat (chat)">
             </button>
             <button id="profile-button">
-                <img class="icon" src="/group31/images/profile-blank.jpg" alt="an image of a profile icon, like a black stickman (profile)">
+                <img class="icon" src="/images/profile-blank.jpg" alt="an image of a profile icon, like a black stickman (profile)">
             </button>
             <button id="friends-menu-button">
-                <img class="icon" src="/group31/images/friends.png" alt="an image of three friends hugging each other (friends)">
+                <img class="icon" src="/images/friends.png" alt="an image of three friends hugging each other (friends)">
             </button>
             <button id="potential-friends-menu-button">
-                <img class="icon" src="/group31/images/potensialfriends.png" alt="an imame of two stickman shaking hands (meet new people)">
+                <img class="icon" src="/images/potensialfriends.png" alt="an imame of two stickman shaking hands (meet new people)">
             </button>
         </div>
     </header>
@@ -42,7 +42,7 @@
         <div id="message-container">
 
         </div>
-        <form id="chat-box" action="/group31/api/message" method="POST" target="hiddenFrame">
+        <form id="chat-box" action="/api/message" method="POST" target="hiddenFrame">
             <input type="text" name="message" placeholder="message" required>
             <button id="chat-send-button" type="submit">Send</button>
             <input class="invisible-data" id="otherUsername" type="text" name="otherUsername">
@@ -54,7 +54,7 @@
 
     <section id="profile-container">
         <h2>Profile</h2>
-        <form id="profile-form" action="/group31/api/changeInformation" method="post" target="hiddenFrame">
+        <form id="profile-form" action="/api/changeInformation" method="post" target="hiddenFrame">
             <label for="username">Username</label>
             <input id="username" type="text" name="username" required placeholder="username">
             <label for="first_name">First name</label>

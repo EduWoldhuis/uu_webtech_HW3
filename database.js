@@ -99,10 +99,10 @@ function createUser(username, password, first_name, last_name, major, email, hob
         const insertQuery = db.prepare("INSERT INTO User (username, password, first_name, last_name, age, email, hobbies, major) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         insertQuery.run([username, password, first_name, last_name, age, email, hobbies, major], (err) => {
             if (image.name.endsWith(".png")) {
-                image.mv(path.join(__dirname, 'public', 'group31', 'images', 'userimages', `${username}.png`));
+                image.mv(path.join(__dirname, 'public', 'images', 'userimages', `${username}.png`));
             }
             else if (image.name.endsWith(".jpg") || image.name.endsWith(".jpeg")) {
-                image.mv(path.join(__dirname, 'public', 'group31', 'images', 'userimages', `${username}.jpg`));
+                image.mv(path.join(__dirname, 'public', 'images', 'userimages', `${username}.jpg`));
             }
             if (err) {
                 callback(err);
@@ -333,11 +333,11 @@ function updateUserData(user_id, username, first_name, last_name, age, email, ma
       } else {
         console.log(`ROW: ${row.username}`)
         if (row.username != username) {
-          if (fs.existsSync(`group31/public/images/userimages/${row.username}.png`)) {
-            fs.rename(`group31/public/images/userimages/${row.username}.png`, `group31/public/images/userimages/${username}.png`, (err) => { if (err) throw err; });
+          if (fs.existsSync(`public/images/userimages/${row.username}.png`)) {
+            fs.rename(`public/images/userimages/${row.username}.png`, `public/images/userimages/${username}.png`, (err) => { if (err) throw err; });
           }
-          else if (fs.existsSync(`group31/public/images/userimages/${row.username}.jpg`)) {
-            fs.rename(`group31/public/images/userimages/${row.username}.jpg`, `group31/public/images/userimages/${username}.jpg`, (err) => { if (err) throw err; });
+          else if (fs.existsSync(`public/images/userimages/${row.username}.jpg`)) {
+            fs.rename(`public/images/userimages/${row.username}.jpg`, `public/images/userimages/${username}.jpg`, (err) => { if (err) throw err; });
           }
           else {
             console.log("FILE NOT FOUND.")

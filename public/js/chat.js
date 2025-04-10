@@ -7,7 +7,7 @@ let otherUsername;
 
 async function fetchUsername() {
     try {
-      const response = await fetch(`/group31/getUsername`, { method: 'GET' });
+      const response = await fetch(`/getUsername`, { method: 'GET' });
       const data = await response.json();
       username = data[0].username;
     } catch (error) {
@@ -19,7 +19,7 @@ async function fetchUsername() {
 async function fetchMessages() {
     try {
         //A fetch request requesting all new messages depending on who the user wants to chat with
-        const response = await fetch(`/group31/api/message?since=${lastMessageID}&otherUsername=${otherUsername}`, { method: 'GET', credentials: 'include' })
+        const response = await fetch(`/api/message?since=${lastMessageID}&otherUsername=${otherUsername}`, { method: 'GET', credentials: 'include' })
         const newMessages = await response.json();
         const container = document.getElementById("message-container");
 
@@ -100,7 +100,7 @@ function clearChat() {
 //Fill the friendslist with all friends so user can select who to chat with
 async function fillFriendList() {
     const selectMessageFriend = document.getElementById("message-friend-menu");
-    const friendsList = await fetch("/group31/api/allFriends", { method: 'GET' }).then(x => x.json()).then(x => { return x });
+    const friendsList = await fetch("/api/allFriends", { method: 'GET' }).then(x => x.json()).then(x => { return x });
     friendsList.forEach(friend => {
         const optionEl = document.createElement("option");
         optionEl.textContent += friend.username;
